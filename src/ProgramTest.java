@@ -1,6 +1,7 @@
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.java.contract.InvariantError;
 import com.google.java.contract.PreconditionError;
 
 public class ProgramTest {
@@ -38,7 +39,7 @@ public class ProgramTest {
 
 	
 	//bug
-	@Test(expected = PreconditionError.class)
+	@Test(expected = InvariantError.class)
 	public void testInvalidID() throws BugzillaException {
 		bug = new Bug(-100, "negative ID");
 	}
