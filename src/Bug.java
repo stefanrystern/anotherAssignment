@@ -52,7 +52,7 @@ public class Bug implements Serializable {
 		if (ID < 0) {
 			throw new BugzillaException(BugzillaException.ErrorType.INVALID_BUGID);
 		}
-		if (description == null || description.length()<=0) {
+		if (description == null || description.length()<=0) {  //weird check that length is not negative
 			throw new BugzillaException(BugzillaException.ErrorType.INVALID_DESCRIPTION);
 		}
 
