@@ -26,8 +26,9 @@ public class Bugzilla implements Serializable {
 		SYSTEMANALYST, QUALITYASSURANCE, DEVELOPER, USER
 	}
 
-	@Requires({ "username != null", "username.length()>0", "username.length()<20", "passwd != null",
-			"passwd.length()>0", "passwd.length()<20",
+	@Requires({ 
+			"username != null", "username.length()>0", "username.length()<20", 
+			"passwd != null", "passwd.length()>0", "passwd.length()<20",
 			"type == MemberType.SYSTEMANALYST || type == MemberType.QUALITYASSURANCE || type == MemberType.DEVELOPER || type == MemberType.USER",
 			"isRegistered(username) == false" })
 	@Ensures({ "isRegistered(old(username)) == true", })
@@ -59,12 +60,19 @@ public class Bugzilla implements Serializable {
 		loggedIn.remove(username);
 	}
 
-	@Requires({ "username != null", "isLoggedIn(username) == true", "getType(username) == MemberType.USER",
-			"description != null", "description.length()>0",
+	@Requires({ 
+			"username != null", 
+			"isLoggedIn(username) == true", 
+			"getType(username) == MemberType.USER",
+			"description != null", 
+			"description.length()>0",
 
 	})
-	@Ensures({ "bugCount() == old(bugCount()) + 1", "getBug(lastBugID()).getBugDescription().equals(old(description))",
-			"getBug(lastBugID()).getID() == bugs.size()-1", })
+	@Ensures({ 
+			"bugCount() == old(bugCount()) + 1", 
+			"getBug(lastBugID()).getBugDescription().equals(old(description))",
+			"getBug(lastBugID()).getID() == bugs.size()-1", 
+			})
 	/*
 	 * The method allows a USER to submit a new bug
 	 */
@@ -98,7 +106,6 @@ public class Bugzilla implements Serializable {
 	@Ensures({ 
 		"getBug(old(bugID)).getState == State.CONFIRMED",
 	})
-
 	public void confirmBug(String username, int bugID) throws BugzillaException {
 
 		getBug(bugID).setState(Bug.State.CONFIRMED);
