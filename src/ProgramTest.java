@@ -371,12 +371,28 @@ public class ProgramTest {
 		bz.invalidateBug("analyst", 0,"solution");
 	}
 	//bugzilla startDevelopment
-	
+	@Test(expected = PreconditionError.class)
+	public void testStartDevelopment() throws BugzillaException {
+		
+	}
 	//bugzilla stopDevelopment
-	
+	@Test(expected = PreconditionError.class)
+	public void testStopDevelopment() throws BugzillaException {
+		
+	}
 	//bugzilla fixedBug
-	
+	@Test(expected = PreconditionError.class)
+	public void testFixedBug() throws BugzillaException {
+		
+	}
 	//bugzilla approvedFix
-	
+	@Test(expected = PreconditionError.class)
+	public void testApprovedFix() throws BugzillaException {
+		
+	}
 	//bugzilla rejectFix
+	@Test(expected = PreconditionError.class)
+	public void testRejectFix() throws BugzillaException {
+		
+	}
 }
