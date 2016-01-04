@@ -6,7 +6,10 @@ import com.google.java.contract.Invariant;
 import com.google.java.contract.Requires;
 
 @Invariant({ "ID >= 0",
-		// TODO
+		"state == State.UNCONFIRMED || state == State.CONFIRMED || state == State.INPROGRESS || state == State.RESOLVED || state == State.VERIFIED",
+		"description != null", "description.length()>0",
+		"solutionType == Resolution.UNRESOLVED || solutionType == Resolution.FIXED || solutionType == Resolution.DUPLICATE || solutionType == Resolution.WONTFIX || solutionType == Resolution.WORKSFORME || solutionType == Resolution.INVALID",
+		"solutionInfo != null",
 })
 /*
  * The class represents a bug in the bugs database. The bug cannot be modified
@@ -38,7 +41,7 @@ public class Bug implements Serializable {
 
 	@Requires({ "ID >= 0", "description != null", "description.length()>0", })
 	@Ensures({ "ID == old(id)", "bugDescription = old(description)", "state = State.UNCONFIRMED",
-			"solutionType = Resolution.UNRESOLVED", })
+			"solutionType = Resolution.UNRESOLVED", "solutionInfo != null"})
 
 	/*
 	 * The constructor accepts the Bug ID and description BugID must not be less
@@ -59,43 +62,27 @@ public class Bug implements Serializable {
 		solutionInfo = new String();
 	}
 
-	@Requires({
-			// TODO
-	})
-	@Ensures({
-			// TODO
-	})
 	public int getID() {
 		return ID;
 	}
 
-	@Requires({
-			// TODO
-	})
-	@Ensures({
-			// TODO
-	})
 	public String getBugDescription() {
 		return bugDescription;
 	}
 
-	@Requires({
-			// TODO
-	})
-	@Ensures({
-			// TODO
-	})
 	public State getState() {
 		return state;
 	}
 
 	@Requires({
-			// ...
+			"st != State.RESOLVED",
+			"st != State.UNCONFIRMED",
 			"st == State.INPROGRESS? state == State.CONFIRMED : true" })
 	@Ensures({
-			// TODO
+			"state == old(st)",
+			"state != State.RESOLVED",
+			"state != State.UNCONFIRMED"
 	})
-
 	/*
 	 * Sets the sate of the bug to any state other than RESOLVED and
 	 * UNCONFIRMED. A bug cannot be set to UNCONFIRMED because it starts in that
@@ -119,13 +106,6 @@ public class Bug implements Serializable {
 		}
 	}
 
-	@Requires({
-			// TODO
-	})
-	@Ensures({
-			// TODO
-	})
-
 	public Resolution getSolutionType() {
 		return solutionType;
 	}
@@ -136,24 +116,18 @@ public class Bug implements Serializable {
 	 */
 
 	@Requires({
-			// TODO
+		"type != Resolution.UNRESOLVED",
+		"solution.length() > 0",
 	})
 	@Ensures({
-			// TODO
+		"solutionType == old(type)",
+		"solutionInfo == old(solution)",
 	})
-
 	public void setAsResolved(Resolution type, String solution) throws BugStateException {
 		state = State.RESOLVED;
 		solutionType = type;
 		solutionInfo = solution;
 	}
-
-	@Requires({
-			// TODO
-	})
-	@Ensures({
-			// TODO
-	})
 
 	public String getSolutionInfo() {
 		return solutionInfo;
