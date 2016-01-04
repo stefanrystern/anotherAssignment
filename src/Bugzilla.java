@@ -26,12 +26,11 @@ public class Bugzilla implements Serializable {
 		SYSTEMANALYST, QUALITYASSURANCE, DEVELOPER, USER
 	}
 
-	@Requires({ "username != null","username.length()>0","username.length()<20",
-			"passwd != null","passwd.length()>0","passwd.length()<20",
+	@Requires({ "username != null", "username.length()>0", "username.length()<20", "passwd != null",
+			"passwd.length()>0", "passwd.length()<20",
 			"type == MemberType.SYSTEMANALYST || type == MemberType.QUALITYASSURANCE || type == MemberType.DEVELOPER || type == MemberType.USER",
 			"isRegistered(username) == false" })
-	@Ensures({ "isRegistered(old(username)) == true",
-	})
+	@Ensures({ "isRegistered(old(username)) == true", })
 	public void register(String username, String passwd, MemberType type) throws BugzillaException {
 
 		if (username == null) {
@@ -45,44 +44,32 @@ public class Bugzilla implements Serializable {
 		members.put(username, getMember(passwd, type));
 	}
 
-	@Requires({
-			"passwd == getPasswd(username)",
-	})
-	@Ensures({
-			"isLoggedIn(old(username)) == true",
-	})
+	@Requires({ "passwd == getPasswd(username)", })
+	@Ensures({ "isLoggedIn(old(username)) == true", })
 	public void login(String username, String passwd) throws BugzillaException {
 
 		loggedIn.add(username);
 	}
 
-	@Requires({
-			"isLoggedIn(username) == true",
-	})
-	@Ensures({
-			"isLoggedIn(old(username)) == false",
-	})
+	@Requires({ "isLoggedIn(username) == true", })
+	@Ensures({ "isLoggedIn(old(username)) == false", })
 
 	public void logout(String username) throws BugzillaException {
 
 		loggedIn.remove(username);
 	}
 
-	@Requires({ "username != null",
-			"isLoggedIn(username) == true",
-			"getType(username) == MemberType.USER",
+	@Requires({ "username != null", "isLoggedIn(username) == true", "getType(username) == MemberType.USER",
 			"description != null", "description.length()>0",
 
 	})
-	@Ensures({ "bugCount() == old(bugCount()) + 1",
-			"getBug(lastBugID()).getBugDescription().equals(old(description))",
-			"getBug(lastBugID()).getID() == bugs.size()-1",
-	})
+	@Ensures({ "bugCount() == old(bugCount()) + 1", "getBug(lastBugID()).getBugDescription().equals(old(description))",
+			"getBug(lastBugID()).getID() == bugs.size()-1", })
 	/*
 	 * The method allows a USER to submit a new bug
 	 */
 	public void submitBug(String username, String description) throws BugzillaException {
-		
+
 		if (username == null) {
 			throwBex(BugzillaException.ErrorType.USERNAME_NULL);
 		}
@@ -98,12 +85,10 @@ public class Bugzilla implements Serializable {
 	/*
 	 * The method allows a SYSTEMANALYST to confirm a bug
 	 */
-	@Requires({
-			// TODO
-	})
-	@Ensures({
-			// TODO
-	})
+	@Requires({ "username != null", "bugID !=null", "getType(username) == MemberType.SYSTEMANALYST",
+			"bugID <= bugs.size()", "bugID >= 0",
+			"getBug(bugID).getState() == getBug(bugID).State.UNCONFIRMED || getBug(bugID).getState() == getBug(bugID).State.RESOLVED" })
+	@Ensures({ "getBug(bugID).getState() == getBug(bugID).State.CONFIRMED" })
 
 	public void confirmBug(String username, int bugID) throws BugzillaException {
 
