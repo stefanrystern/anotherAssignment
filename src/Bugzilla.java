@@ -102,6 +102,7 @@ public class Bugzilla implements Serializable {
 			"bugID >= 0",
 			"bugExists(bugID) == true",
 			"getBug(bugID).getState == State.UNCONFIRMED",
+			"getBug(bugID).getState != State.VERIFIED",
 	})
 	@Ensures({ 
 			"getBug(old(bugID)).getState == State.CONFIRMED",
@@ -124,6 +125,7 @@ public class Bugzilla implements Serializable {
 			"getType(username) == MemberType.SYSTEMANALYST",
 			"bugExists(bugID) == true",
 			"getBug(bugID).getState == State.UNCONFIRMED",
+			"getBug(bugID).getState != State.VERIFIED",
 	})
 	@Ensures({ 
 			"getBug(old(bugID)).getState == State.RESOLVED",
@@ -146,6 +148,7 @@ public class Bugzilla implements Serializable {
 			"getType(username) == MemberType.DEVELOPER",
 			"bugExists(bugID) == true",
 			"getBug(bugID).getState == State.CONFIRMED",
+			"getBug(bugID).getState != State.VERIFIED",
 	})
 	@Ensures({ 
 			"getBug(old(bugID)).getState == State.INPROGRESS",
@@ -168,6 +171,8 @@ public class Bugzilla implements Serializable {
 			"getType(username) == MemberType.DEVELOPER",
 			"bugExists(bugID) == true",
 			"getBug(bugID).getState == State.INPROGRESS",
+			"devInProgress(username, bugID) == true",
+			"getBug(bugID).getState != State.VERIFIED",
 	})
 	@Ensures({ 
 			"getBug(old(bugID)).getState == State.CONFIRMED",
@@ -185,7 +190,6 @@ public class Bugzilla implements Serializable {
 			"username != null",
 			"bugID !=null",
 			"resType != null",
-			"resType == Resolution.FIXED",
 			"solution !=null",
 			"bugID < bugs.size()", 
 			"bugID >= 0",
@@ -193,6 +197,8 @@ public class Bugzilla implements Serializable {
 			"getType(username) == MemberType.DEVELOPER",
 			"bugExists(bugID) == true",
 			"getBug(bugID).getState == State.INPROGRESS",
+			"devInProgress(username, bugID) == true",
+			"getBug(bugID).getState != State.VERIFIED",
 	})
 	@Ensures({ 
 			"getBug(old(bugID)).getState == State.RESOLVED",
@@ -217,6 +223,7 @@ public class Bugzilla implements Serializable {
 			"getType(username) == MemberType.QUALITYASSURANCE",
 			"bugExists(bugID) == true",
 			"getBug(bugID).getState == State.RESOLVED",
+			"getBug(bugID).getState != State.VERIFIED",
 	})
 	@Ensures({ 
 			"getBug(old(bugID)).getState == State.VERIFIED",
@@ -238,6 +245,7 @@ public class Bugzilla implements Serializable {
 			"getType(username) == MemberType.QUALITYASSURANCE",
 			"bugExists(bugID) == true",
 			"getBug(bugID).getState == State.RESOLVED",
+			"getBug(bugID).getState != State.VERIFIED",
 	})
 	@Ensures({ 
 			"getBug(old(bugID)).getState == State.CONFIRMED",
