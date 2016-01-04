@@ -85,10 +85,19 @@ public class Bugzilla implements Serializable {
 	/*
 	 * The method allows a SYSTEMANALYST to confirm a bug
 	 */
-	@Requires({ "username != null", "bugID !=null", "getType(username) == MemberType.SYSTEMANALYST",
-			"bugID <= bugs.size()", "bugID >= 0",
-			"getBug(bugID).getState() == getBug(bugID).State.UNCONFIRMED || getBug(bugID).getState() == getBug(bugID).State.RESOLVED" })
-	@Ensures({ "getBug(bugID).getState() == getBug(bugID).State.CONFIRMED" })
+	@Requires({ 
+			"username != null", 
+			"bugID !=null", 
+			"isLoggedIn(username) == true",
+			"getType(username) == MemberType.SYSTEMANALYST",
+			"bugID < bugs.size()", 
+			"bugID >= 0",
+			"bugExists(bugID) == true",
+			"getBug(bugID).getState == State.UNCONFIRMED",
+	})
+	@Ensures({ 
+		"getBug(old(bugID)).getState == State.CONFIRMED",
+	})
 
 	public void confirmBug(String username, int bugID) throws BugzillaException {
 
