@@ -137,11 +137,19 @@ public class Bugzilla implements Serializable {
 	/*
 	 * The method allows a DEVELOPER to start working on the bug
 	 */
-	@Requires({
-			// TODO
+	@Requires({ 
+			"username != null",
+			"bugID !=null",
+			"bugID < bugs.size()", 
+			"bugID >= 0",
+			"isLoggedIn(username) == true",
+			"getType(username) == MemberType.DEVELOPER",
+			"bugExists(bugID) == true",
+			"getBug(bugID).getState == State.CONFIRMED",
 	})
-	@Ensures({
-			// TODO
+	@Ensures({ 
+			"getBug(old(bugID)).getState == State.INPROGRESS",
+			"devInProgress(old(username), old(bugID)) == true",
 	})
 	public void startDevelopment(String username, int bugID) throws BugStateException {
 		getBug(bugID).setState(Bug.State.INPROGRESS);
@@ -151,11 +159,19 @@ public class Bugzilla implements Serializable {
 	/*
 	 * The method allows a DEVELOPER to stop working on the bug
 	 */
-	@Requires({
-			// TODO
+	@Requires({ 
+			"username != null",
+			"bugID !=null",
+			"bugID < bugs.size()", 
+			"bugID >= 0",
+			"isLoggedIn(username) == true",
+			"getType(username) == MemberType.DEVELOPER",
+			"bugExists(bugID) == true",
+			"getBug(bugID).getState == State.INPROGRESS",
 	})
-	@Ensures({
-			// TODO
+	@Ensures({ 
+			"getBug(old(bugID)).getState == State.CONFIRMED",
+			"devInProgress(old(username), old(bugID)) == false",
 	})
 	public void stopDevelopment(String username, int bugID) throws BugStateException {
 		getBug(bugID).setState(Bug.State.CONFIRMED);
@@ -165,11 +181,24 @@ public class Bugzilla implements Serializable {
 	/*
 	 * The method allows DEVELOPER to mark the bug as fixed
 	 */
-	@Requires({
-			// TODO
+	@Requires({ 
+			"username != null",
+			"bugID !=null",
+			"resType != null",
+			"resType == Resolution.FIXED",
+			"solution !=null",
+			"bugID < bugs.size()", 
+			"bugID >= 0",
+			"isLoggedIn(username) == true",
+			"getType(username) == MemberType.DEVELOPER",
+			"bugExists(bugID) == true",
+			"getBug(bugID).getState == State.INPROGRESS",
 	})
-	@Ensures({
-			// TODO
+	@Ensures({ 
+			"getBug(old(bugID)).getState == State.RESOLVED",
+			"devInProgress(old(username), old(bugID)) == false",
+			"getBug(old(bugID)).getSolutionInfo == old(solution)",
+			"getBug(old(bugID)).getSolutionType == old(resType)",
 	})
 	public void fixedBug(String username, int bugID, Bug.Resolution resType, String solution) throws BugStateException {
 		getBug(bugID).setAsResolved(resType, solution);
@@ -179,11 +208,19 @@ public class Bugzilla implements Serializable {
 	/*
 	 * The method allows QUALITYASSURANCE to approve the fix (VERIFY)
 	 */
-	@Requires({
-			// TODO
+	@Requires({ 
+			"username != null",
+			"bugID !=null",
+			"bugID < bugs.size()", 
+			"bugID >= 0",
+			"isLoggedIn(username) == true",
+			"getType(username) == MemberType.QUALITYASSURANCE",
+			"bugExists(bugID) == true",
+			"getBug(bugID).getState == State.RESOLVED",
 	})
-	@Ensures({
-			// TODO
+	@Ensures({ 
+			"getBug(old(bugID)).getState == State.VERIFIED",
+			
 	})
 	public void approveFix(String username, int bugID) throws BugStateException {
 		getBug(bugID).setState(Bug.State.VERIFIED);
@@ -192,11 +229,19 @@ public class Bugzilla implements Serializable {
 	/*
 	 * The method allows QUALITYASSURANCE to reject the bug (back to CONFIRMED)
 	 */
-	@Requires({
-			// TODO
+	@Requires({ 
+			"username != null",
+			"bugID !=null",
+			"bugID < bugs.size()", 
+			"bugID >= 0",
+			"isLoggedIn(username) == true",
+			"getType(username) == MemberType.QUALITYASSURANCE",
+			"bugExists(bugID) == true",
+			"getBug(bugID).getState == State.RESOLVED",
 	})
-	@Ensures({
-			// TODO
+	@Ensures({ 
+			"getBug(old(bugID)).getState == State.CONFIRMED",
+			
 	})
 	public void rejectFix(String username, int bugID) throws BugStateException {
 		getBug(bugID).setState(Bug.State.CONFIRMED);
