@@ -1,11 +1,5 @@
-
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-
-import com.google.java.contract.InvariantError;
-import com.google.java.contract.PostconditionError;
 import com.google.java.contract.PreconditionError;
 
 public class ProgramTest {
@@ -41,26 +35,42 @@ public class ProgramTest {
 		bug.setState(Bug.State.INPROGRESS);
 	}
 
+	
+	//bug
 	@Test(expected = PreconditionError.class)
 	public void testInvalidID() throws BugzillaException {
 		bug = new Bug(-100, "negative ID");
 	}
 
 	@Test(expected = PreconditionError.class)
-	public void testInvalidDescription() throws BugzillaException {
+	public void testNullDescription() throws BugzillaException {
 		bug = new Bug(0, null);
 	}
-
+	
 	@Test(expected = PreconditionError.class)
-	public void testSetStateFromConfirmedToInProgress() throws BugzillaException {
+	public void testEmptyDescription() throws BugzillaException {
+		bug = new Bug(0, "");
+	}
+	//bug setState
+	@Test(expected = PreconditionError.class)
+	public void testSetStateToInProgressFromFalseState() throws BugzillaException {
+		bug = new Bug(0, "set state to unconfirmed");
+		bug.setState(Bug.State.INPROGRESS);
+	}
+	@Test(expected = PreconditionError.class)
+	public void testSetStateToConfirmedFromFalseState() throws BugzillaException {
 		bug = new Bug(0, "set state to unconfirmed");
 		bug.setState(Bug.State.CONFIRMED);
 		bug.setState(Bug.State.INPROGRESS);
-
-		bug = new Bug(0, "set state to unconfirmed");
-		bug.setState(Bug.State.INPROGRESS);
+		bug.setAsResolved(Bug.Resolution.FIXED, "fixed it");
+		bug.setState(Bug.State.VERIFIED);
+		bug.setState(Bug.State.CONFIRMED);
 	}
-
+	@Test(expected = PreconditionError.class)
+	public void testSetStateToVerifiedProgressFromFalseState() throws BugzillaException {
+		bug = new Bug(0, "set state to unconfirmed");
+		bug.setState(Bug.State.VERIFIED);
+	}
 	@Test(expected = PreconditionError.class)
 	public void testSetStateUnconfirmed() throws BugzillaException {
 		bug = new Bug(0, "set state to unconfirmed");
@@ -72,16 +82,26 @@ public class ProgramTest {
 		bug = new Bug(0, "set state to resolved");
 		bug.setState(Bug.State.RESOLVED);
 	}
-
+	// bug setResolved
 	@Test(expected = PreconditionError.class)
 	public void testSetResolvedUnresolved() throws BugzillaException {
 		bug = new Bug(0, "setAsResolved to unresolved");
+		bug.setState(Bug.State.CONFIRMED);
+		bug.setState(Bug.State.INPROGRESS);
 		bug.setAsResolved(Bug.Resolution.UNRESOLVED, "should fail");
 	}
 
 	@Test(expected = PreconditionError.class)
 	public void testSetAsResolvedInvalidSolution() throws BugzillaException {
 		bug = new Bug(0, "set state to resolved");
+		bug.setState(Bug.State.CONFIRMED);
+		bug.setState(Bug.State.INPROGRESS);
+		bug.setAsResolved(Bug.Resolution.FIXED, null);
+	}
+	@Test(expected = PreconditionError.class)
+	public void testSetAsResolvedInvalidStartState() throws BugzillaException {
+		bug = new Bug(0, "set state to resolved");
+		bug.setAsResolved(Bug.Resolution.FIXED, "fixed it");
 	}
 	// Bugzilla part
 

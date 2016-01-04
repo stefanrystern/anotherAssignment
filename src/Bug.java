@@ -80,7 +80,10 @@ public class Bug implements Serializable {
 	@Requires({
 			"st != State.RESOLVED",
 			"st != State.UNCONFIRMED",
-			"st == State.INPROGRESS? state == State.CONFIRMED : true" })
+			"st == State.INPROGRESS? state == State.CONFIRMED : true",
+			"st == State.CONFIRMED? state == (State.RESOLVED || state.UNCONFIRMED) == State. : true",
+			"st == State.VERIFIED? state == State.RESOLVED : true"
+			})
 	@Ensures({
 			"state == old(st)",
 			"state != State.RESOLVED",
@@ -95,6 +98,12 @@ public class Bug implements Serializable {
 	public void setState(State st) throws BugzillaException {
 
 		if (st == State.INPROGRESS && state != State.CONFIRMED) {
+			throw new BugStateException(state, st);
+		}
+		if (st == State.CONFIRMED && (state != State.RESOLVED || state != State.UNCONFIRMED)) {
+			throw new BugStateException(state, st);
+		}
+		if (st == State.VERIFIED && state != State.RESOLVED) {
 			throw new BugStateException(state, st);
 		}
 		if(st == State.UNCONFIRMED){
@@ -127,6 +136,7 @@ public class Bug implements Serializable {
 	@Requires({
 		"type != Resolution.UNRESOLVED",
 		"solution != null",
+		"state == State.INPROGRESS || state == State.UNCONFIRMED"
 	})
 	@Ensures({
 		"solutionType == old(type)",
@@ -138,6 +148,9 @@ public class Bug implements Serializable {
 		}
 		if(solution == null){
 			throw new BugzillaException(BugzillaException.ErrorType.INVALID_SOLUTION_INFO);
+		}
+		if(state != State.INPROGRESS || state != State.UNCONFIRMED){
+			throw new BugzillaException(BugzillaException.ErrorType.INVALID_STATE_TRANSITION);
 		}
 		
 		state = State.RESOLVED;
