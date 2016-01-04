@@ -28,7 +28,6 @@ public class ProgramTest {
 		Bug bug = null;
 		Bugzilla bz = null;
 	}
-
 	@Test(expected = PreconditionError.class)
 	public void testRegisterNullName() {
 		try {
@@ -47,7 +46,7 @@ public class ProgramTest {
 			System.out.println(e.getErrorMsg());
 		}
 	}
-
+	
 	@Test(expected = PreconditionError.class)
 	public void testChangeStateUnconfirmedToInProgress() {
 		try {
@@ -163,5 +162,99 @@ public class ProgramTest {
 			e.printStackTrace();
 			System.out.println(e.getErrorMsg());
 		}
+	}
+	//Bugzilla part
+	
+	@Test(expected = PreconditionError.class)
+	public void testRegisterNullUsername(){
+		
+	}
+	@Test(expected = PreconditionError.class)
+	public void testAlreadyRegistered(){
+		
+	}
+	@Test(expected = PreconditionError.class)
+	public void testUsernameLength(){
+		
+	}
+	@Test(expected = PreconditionError.class)
+	public void testRegisterNullPassword(){
+		
+	}
+	@Test(expected = PreconditionError.class)
+	public void testRegisterPasswordLength(){
+		
+	}
+	@Test(expected = PreconditionError.class)
+	public void testRegisterMemberType(){
+		
+	}
+	//Login
+	@Test(expected = PreconditionError.class)
+	public void testLoginNullUsername(){
+		
+	}
+	@Test(expected = PreconditionError.class)
+	public void testLoginNullPassword(){
+		
+	}
+	@Test(expected = PreconditionError.class)
+	public void testLoginInvalidPassword(){
+		
+	}
+	@Test(expected = PreconditionError.class)
+	public void testLoginIsLoggedIn(){
+		
+	}
+	//Logout
+	@Test(expected = PreconditionError.class)
+	public void testLogoutNullUsername(){
+		
+	}
+	@Test(expected = PreconditionError.class)
+	public void testLogoutIsNotLoggedIn(){
+		
+	}
+	//submitbug
+	@Test(expected = PreconditionError.class)
+	public void testSubmitBugNullUsername(){
+		
+	}
+	@Test(expected = PreconditionError.class)
+	public void testSubmitBugMemberTypeUser(){
+		
+	}
+	@Test(expected = PreconditionError.class)
+	public void testSubmitBugNotLoggedIn(){
+		
+	}
+	@Test(expected = PreconditionError.class)
+	public void testSubmitBugDescriptionLength(){
+		
+	}
+	//confirmbug
+	@Test(expected = PreconditionError.class)
+	public void testConfirmBugNullUsername(){
+		
+	}
+	@Test(expected = PreconditionError.class)
+	public void testConfirmBugIDoutOfBounds(){
+		
+	}
+	@Test(expected = PreconditionError.class)
+	public void testConfirmBugTypeNotSystemAnalyst(){
+		
+	}
+	@Test(expected = PreconditionError.class)
+	public void testConfirmBugNotLoggedIn(){
+		
+	}
+	@Test(expected = PreconditionError.class)
+	public void testConfirmBugStateNotUnconfirmed(){
+		
+	}
+	@Test(expected = PreconditionError.class)
+	public void testConfirmBugStateVerified(){
+		
 	}
 }
