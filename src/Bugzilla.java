@@ -104,7 +104,7 @@ public class Bugzilla implements Serializable {
 			"getBug(bugID).getState == State.UNCONFIRMED",
 	})
 	@Ensures({ 
-		"getBug(old(bugID)).getState == State.CONFIRMED",
+			"getBug(old(bugID)).getState == State.CONFIRMED",
 	})
 	public void confirmBug(String username, int bugID) throws BugzillaException {
 
@@ -114,11 +114,20 @@ public class Bugzilla implements Serializable {
 	/*
 	 * The method allows a SYSTEMANALYST to invalidate a bug
 	 */
-	@Requires({
-			// TODO
+	@Requires({ 
+			"username != null", 
+			"bugID !=null",
+			"solution != null",
+			"isLoggedIn(username) == true",
+			"getType(username) == MemberType.SYSTEMANALYST",
+			"bugID < bugs.size()", 
+			"bugID >= 0",
+			"bugExists(bugID) == true",
+			"getBug(bugID).getState == State.UNCONFIRMED",
 	})
-	@Ensures({
-			// TODO
+	@Ensures({ 
+			"getBug(old(bugID)).getState == State.RESOLVED",
+			"getBug(old(bugID)).getState == Resolution.INVALID"
 	})
 	public void invalidateBug(String username, int bugID, String solution) throws BugStateException {
 		getBug(bugID).setAsResolved(Bug.Resolution.INVALID, solution);
