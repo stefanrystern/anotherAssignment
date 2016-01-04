@@ -7,7 +7,7 @@ import com.google.java.contract.Requires;
 
 @Invariant({ "ID >= 0",
 		"state == State.UNCONFIRMED || state == State.CONFIRMED || state == State.INPROGRESS || state == State.RESOLVED || state == State.VERIFIED",
-		"description != null", "description.length()>0",
+		"bugDescription != null", "bugDescription.length()>0",
 		"solutionType == Resolution.UNRESOLVED || solutionType == Resolution.FIXED || solutionType == Resolution.DUPLICATE || solutionType == Resolution.WONTFIX || solutionType == Resolution.WORKSFORME || solutionType == Resolution.INVALID",
 		"solutionInfo != null",
 })
@@ -40,8 +40,8 @@ public class Bug implements Serializable {
 	}
 
 	@Requires({ "ID >= 0", "description != null", "description.length()>0", })
-	@Ensures({ "ID == old(id)", "bugDescription = old(description)", "state = State.UNCONFIRMED",
-			"solutionType = Resolution.UNRESOLVED", "solutionInfo != null"})
+	@Ensures({ "ID == old(id)", "bugDescription.equals(old(description))", "state == State.UNCONFIRMED",
+			"solutionType == Resolution.UNRESOLVED", "solutionInfo != null"})
 
 	/*
 	 * The constructor accepts the Bug ID and description BugID must not be less
@@ -81,7 +81,7 @@ public class Bug implements Serializable {
 			"st != State.RESOLVED",
 			"st != State.UNCONFIRMED",
 			"st == State.INPROGRESS? state == State.CONFIRMED : true",
-			"st == State.CONFIRMED? state == (State.RESOLVED || state.UNCONFIRMED) == State. : true",
+			"st == State.CONFIRMED? (state == State.RESOLVED || state == State.UNCONFIRMED) : true",
 			"st == State.VERIFIED? state == State.RESOLVED : true"
 			})
 	@Ensures({

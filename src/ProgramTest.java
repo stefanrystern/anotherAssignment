@@ -1,5 +1,6 @@
 import org.junit.Before;
 import org.junit.Test;
+
 import com.google.java.contract.PreconditionError;
 
 public class ProgramTest {
@@ -370,29 +371,29 @@ public class ProgramTest {
 		bz.approveFix("assurance", 0);
 		bz.invalidateBug("analyst", 0,"solution");
 	}
-	//bugzilla startDevelopment
-	@Test(expected = PreconditionError.class)
-	public void testStartDevelopment() throws BugzillaException {
-		
-	}
-	//bugzilla stopDevelopment
-	@Test(expected = PreconditionError.class)
-	public void testStopDevelopment() throws BugzillaException {
-		
-	}
-	//bugzilla fixedBug
-	@Test(expected = PreconditionError.class)
-	public void testFixedBug() throws BugzillaException {
-		
-	}
-	//bugzilla approvedFix
-	@Test(expected = PreconditionError.class)
-	public void testApprovedFix() throws BugzillaException {
-		
-	}
-	//bugzilla rejectFix
-	@Test(expected = PreconditionError.class)
-	public void testRejectFix() throws BugzillaException {
-		
-	}
+//	//bugzilla startDevelopment
+//	@Test(expected = PreconditionError.class)
+//	public void testStartDevelopment() throws BugzillaException {
+//		
+//	}
+//	//bugzilla stopDevelopment
+//	@Test(expected = PreconditionError.class)
+//	public void testStopDevelopment() throws BugzillaException {
+//		
+//	}
+//	//bugzilla fixedBug
+//	@Test(expected = PreconditionError.class)
+//	public void testFixedBug() throws BugzillaException {
+//		
+//	}
+//	//bugzilla approvedFix
+//	@Test(expected = PreconditionError.class)
+//	public void testApprovedFix() throws BugzillaException {
+//		
+//	}
+//	//bugzilla rejectFix
+//	@Test(expected = PreconditionError.class)
+//	public void testRejectFix() throws BugzillaException {
+//		
+//	}
 }

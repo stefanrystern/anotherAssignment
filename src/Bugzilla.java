@@ -155,7 +155,7 @@ public class Bugzilla implements Serializable {
 			"getBug(bugID).getState() != Bug.State.VERIFIED",
 	})
 	@Ensures({ 
-			"getBug(old(bugID)).getState == State.CONFIRMED",
+			"getBug(old(bugID)).getState() == Bug.State.CONFIRMED",
 	})
 	public void confirmBug(String username, int bugID) throws BugzillaException {
 
@@ -195,9 +195,9 @@ public class Bugzilla implements Serializable {
 			"getBug(bugID).getState() != Bug.State.VERIFIED",
 	})
 	@Ensures({ 
-			"getBug(old(bugID)).getState == State.RESOLVED",
-			"getBug(old(bugID)).getSolutionType == Resolution.INVALID",
-			"getBug(old(bugID)).getSolutionInfo == old(solution)"
+			"getBug(old(bugID)).getState() == Bug.State.RESOLVED",
+			"getBug(old(bugID)).getSolutionType() == Bug.Resolution.INVALID",
+			"getBug(old(bugID)).getSolutionInfo() == old(solution)"
 	})
 	public void invalidateBug(String username, int bugID, String solution) throws BugzillaException {
 		if (username == null) {
@@ -235,7 +235,7 @@ public class Bugzilla implements Serializable {
 			"getBug(bugID).getState() != Bug.State.VERIFIED",
 	})
 	@Ensures({ 
-			"getBug(old(bugID)).getState == State.INPROGRESS",
+			"getBug(old(bugID)).getState() == Bug.State.INPROGRESS",
 			"devInProgress(old(username), old(bugID)) == true",
 	})
 	public void startDevelopment(String username, int bugID) throws BugzillaException {
@@ -267,7 +267,6 @@ public class Bugzilla implements Serializable {
 	 */
 	@Requires({ 
 			"username != null",
-			"bugID !=null",
 			"bugID < bugs.size()", 
 			"isLoggedIn(username) == true",
 			"getType(username) == MemberType.DEVELOPER",
@@ -277,7 +276,7 @@ public class Bugzilla implements Serializable {
 			"getBug(bugID).getState() != Bug.State.VERIFIED",
 	})
 	@Ensures({ 
-			"getBug(old(bugID)).getState == State.CONFIRMED",
+			"getBug(old(bugID)).getState() == Bug.State.CONFIRMED",
 			"devInProgress(old(username), old(bugID)) == false",
 	})
 	public void stopDevelopment(String username, int bugID) throws BugzillaException {
@@ -324,10 +323,10 @@ public class Bugzilla implements Serializable {
 			"getBug(bugID).getState() != Bug.State.VERIFIED",
 	})
 	@Ensures({ 
-			"getBug(old(bugID)).getState == State.RESOLVED",
+			"getBug(old(bugID)).getState() == Bug.State.RESOLVED",
 			"devInProgress(old(username), old(bugID)) == false",
-			"getBug(old(bugID)).getSolutionInfo == old(solution)",
-			"getBug(old(bugID)).getSolutionType == old(resType)",
+			"getBug(old(bugID)).getSolutionInfo() == old(solution)",
+			"getBug(old(bugID)).getSolutionType() == old(resType)",
 	})
 	public void fixedBug(String username, int bugID, Bug.Resolution resType, String solution) throws BugzillaException {
 		if (resType == null) {
@@ -367,7 +366,6 @@ public class Bugzilla implements Serializable {
 	 */
 	@Requires({ 
 			"username != null",
-			"bugID !=null",
 			"bugID < bugs.size()", 
 			"isLoggedIn(username) == true",
 			"getType(username) == MemberType.QUALITYASSURANCE",
@@ -376,7 +374,7 @@ public class Bugzilla implements Serializable {
 			"getBug(bugID).getState() != Bug.State.VERIFIED",
 	})
 	@Ensures({ 
-			"getBug(old(bugID)).getState == State.VERIFIED",
+			"getBug(old(bugID)).getState() == Bug.State.VERIFIED",
 			
 	})
 	public void approveFix(String username, int bugID) throws BugzillaException {
@@ -410,17 +408,16 @@ public class Bugzilla implements Serializable {
 	 */
 	@Requires({ 
 			"username != null",
-			"bugID !=null",
 			"bugID < bugs.size()", 
 			"bugID >= 0",
 			"isLoggedIn(username) == true",
 			"getType(username) == MemberType.QUALITYASSURANCE",
 			"bugExists(bugID) == true",
-			"getBug(bugID).getState == State.RESOLVED",
-			"getBug(bugID).getState != State.VERIFIED",
+			"getBug(bugID).getState() == Bug.State.RESOLVED",
+			"getBug(bugID).getState() != Bug.State.VERIFIED",
 	})
 	@Ensures({ 
-			"getBug(old(bugID)).getState == State.CONFIRMED",
+			"getBug(old(bugID)).getState() == Bug.State.CONFIRMED",
 			
 	})
 	public void rejectFix(String username, int bugID) throws BugzillaException {
