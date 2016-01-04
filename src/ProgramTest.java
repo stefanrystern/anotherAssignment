@@ -705,12 +705,204 @@ public class ProgramTest {
 
 	//bugzilla approvedFix
 	@Test(expected = PreconditionError.class)
-	public void testApprovedFix() throws BugzillaException {
-			
+	public void testApprovedFixNullUsername() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.USER);
+		bz.register("analyst", "analyst", Bugzilla.MemberType.SYSTEMANALYST);
+		bz.register("assurance", "assurance", Bugzilla.MemberType.QUALITYASSURANCE);
+		bz.register("dev", "dev", Bugzilla.MemberType.DEVELOPER);
+		bz.login("mina", "mina");
+		bz.login("analyst", "analyst");
+		bz.login("assurance", "assurance");
+		bz.login("dev", "dev");
+		bz.submitBug("user", "it's a bug");
+		bz.confirmBug("analyst", 0);
+		bz.startDevelopment("dev", 0);
+		bz.fixedBug("dev", 0, Bug.Resolution.FIXED, "I fixed it!");
+		bz.approveFix(null, 0);
 	}
+	public void testApprovedFixInvalidBugID() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.USER);
+		bz.register("analyst", "analyst", Bugzilla.MemberType.SYSTEMANALYST);
+		bz.register("assurance", "assurance", Bugzilla.MemberType.QUALITYASSURANCE);
+		bz.register("dev", "dev", Bugzilla.MemberType.DEVELOPER);
+		bz.login("mina", "mina");
+		bz.login("analyst", "analyst");
+		bz.login("assurance", "assurance");
+		bz.login("dev", "dev");
+		bz.submitBug("user", "it's a bug");
+		bz.confirmBug("analyst", 0);
+		bz.startDevelopment("dev", 0);
+		bz.fixedBug("dev", 0, Bug.Resolution.FIXED, "I fixed it!");
+		bz.approveFix("assurance", -10);
+	}
+	public void testApprovedFixMemberTypeQA() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.USER);
+		bz.register("analyst", "analyst", Bugzilla.MemberType.SYSTEMANALYST);
+		bz.register("assurance", "assurance", Bugzilla.MemberType.QUALITYASSURANCE);
+		bz.register("dev", "dev", Bugzilla.MemberType.DEVELOPER);
+		bz.login("mina", "mina");
+		bz.login("analyst", "analyst");
+		bz.login("assurance", "assurance");
+		bz.login("dev", "dev");
+		bz.submitBug("user", "it's a bug");
+		bz.confirmBug("analyst", 0);
+		bz.startDevelopment("dev", 0);
+		bz.fixedBug("dev", 0, Bug.Resolution.FIXED, "I fixed it!");
+		bz.approveFix("dev", 0);
+	}
+	public void testApprovedFixLoggedOut() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.USER);
+		bz.register("analyst", "analyst", Bugzilla.MemberType.SYSTEMANALYST);
+		bz.register("assurance", "assurance", Bugzilla.MemberType.QUALITYASSURANCE);
+		bz.register("dev", "dev", Bugzilla.MemberType.DEVELOPER);
+		bz.login("mina", "mina");
+		bz.login("analyst", "analyst");
+		bz.login("assurance", "assurance");
+		bz.login("dev", "dev");
+		bz.submitBug("user", "it's a bug");
+		bz.confirmBug("analyst", 0);
+		bz.startDevelopment("dev", 0);
+		bz.fixedBug("dev", 0, Bug.Resolution.FIXED, "I fixed it!");
+		bz.logout("assurance");
+		bz.approveFix("assurance", 0);
+	}
+	public void testApprovedFixStateResolved() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.USER);
+		bz.register("analyst", "analyst", Bugzilla.MemberType.SYSTEMANALYST);
+		bz.register("assurance", "assurance", Bugzilla.MemberType.QUALITYASSURANCE);
+		bz.register("dev", "dev", Bugzilla.MemberType.DEVELOPER);
+		bz.login("mina", "mina");
+		bz.login("analyst", "analyst");
+		bz.login("assurance", "assurance");
+		bz.login("dev", "dev");
+		bz.submitBug("user", "it's a bug");
+		bz.confirmBug("analyst", 0);
+		bz.startDevelopment("dev", 0);
+		bz.stopDevelopment("dev", 0);
+		bz.approveFix("assurance", 0);
+	}
+	public void testApprovedFixStateVerified() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.USER);
+		bz.register("analyst", "analyst", Bugzilla.MemberType.SYSTEMANALYST);
+		bz.register("assurance", "assurance", Bugzilla.MemberType.QUALITYASSURANCE);
+		bz.register("dev", "dev", Bugzilla.MemberType.DEVELOPER);
+		bz.login("mina", "mina");
+		bz.login("analyst", "analyst");
+		bz.login("assurance", "assurance");
+		bz.login("dev", "dev");
+		bz.submitBug("user", "it's a bug");
+		bz.confirmBug("analyst", 0);
+		bz.startDevelopment("dev", 0);
+		bz.fixedBug("dev", 0, Bug.Resolution.FIXED, "I fixed it!");
+		bz.approveFix("assurance", 0);
+		bz.approveFix("assurance", 0);
+	}
+	
 	//bugzilla rejectFix
 	@Test(expected = PreconditionError.class)
-	public void testRejectFix() throws BugzillaException {
-	
+	public void testRejectFixNullUsername() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.USER);
+		bz.register("analyst", "analyst", Bugzilla.MemberType.SYSTEMANALYST);
+		bz.register("assurance", "assurance", Bugzilla.MemberType.QUALITYASSURANCE);
+		bz.register("dev", "dev", Bugzilla.MemberType.DEVELOPER);
+		bz.login("mina", "mina");
+		bz.login("analyst", "analyst");
+		bz.login("assurance", "assurance");
+		bz.login("dev", "dev");
+		bz.submitBug("user", "it's a bug");
+		bz.confirmBug("analyst", 0);
+		bz.startDevelopment("dev", 0);
+		bz.fixedBug("dev", 0, Bug.Resolution.FIXED, "I fixed it!");
+		bz.rejectFix(null, 0);
 	}
+	public void testRejectFixInvalidBugID() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.USER);
+		bz.register("analyst", "analyst", Bugzilla.MemberType.SYSTEMANALYST);
+		bz.register("assurance", "assurance", Bugzilla.MemberType.QUALITYASSURANCE);
+		bz.register("dev", "dev", Bugzilla.MemberType.DEVELOPER);
+		bz.login("mina", "mina");
+		bz.login("analyst", "analyst");
+		bz.login("assurance", "assurance");
+		bz.login("dev", "dev");
+		bz.submitBug("user", "it's a bug");
+		bz.confirmBug("analyst", 0);
+		bz.startDevelopment("dev", 0);
+		bz.fixedBug("dev", 0, Bug.Resolution.FIXED, "I fixed it!");
+		bz.rejectFix("assurance", -10);
+	}
+	public void testRejectFixMemberTypeQA() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.USER);
+		bz.register("analyst", "analyst", Bugzilla.MemberType.SYSTEMANALYST);
+		bz.register("assurance", "assurance", Bugzilla.MemberType.QUALITYASSURANCE);
+		bz.register("dev", "dev", Bugzilla.MemberType.DEVELOPER);
+		bz.login("mina", "mina");
+		bz.login("analyst", "analyst");
+		bz.login("assurance", "assurance");
+		bz.login("dev", "dev");
+		bz.submitBug("user", "it's a bug");
+		bz.confirmBug("analyst", 0);
+		bz.startDevelopment("dev", 0);
+		bz.fixedBug("dev", 0, Bug.Resolution.FIXED, "I fixed it!");
+		bz.rejectFix("dev", 0);
+	}
+	public void testRejectFixLoggedOut() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.USER);
+		bz.register("analyst", "analyst", Bugzilla.MemberType.SYSTEMANALYST);
+		bz.register("assurance", "assurance", Bugzilla.MemberType.QUALITYASSURANCE);
+		bz.register("dev", "dev", Bugzilla.MemberType.DEVELOPER);
+		bz.login("mina", "mina");
+		bz.login("analyst", "analyst");
+		bz.login("assurance", "assurance");
+		bz.login("dev", "dev");
+		bz.submitBug("user", "it's a bug");
+		bz.confirmBug("analyst", 0);
+		bz.startDevelopment("dev", 0);
+		bz.fixedBug("dev", 0, Bug.Resolution.FIXED, "I fixed it!");
+		bz.logout("assurance");
+		bz.rejectFix("assurance", 0);
+	}
+	public void testRejectFixStateResolved() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.USER);
+		bz.register("analyst", "analyst", Bugzilla.MemberType.SYSTEMANALYST);
+		bz.register("assurance", "assurance", Bugzilla.MemberType.QUALITYASSURANCE);
+		bz.register("dev", "dev", Bugzilla.MemberType.DEVELOPER);
+		bz.login("mina", "mina");
+		bz.login("analyst", "analyst");
+		bz.login("assurance", "assurance");
+		bz.login("dev", "dev");
+		bz.submitBug("user", "it's a bug");
+		bz.confirmBug("analyst", 0);
+		bz.startDevelopment("dev", 0);
+		bz.stopDevelopment("dev", 0);
+		bz.rejectFix("assurance", 0);
+	}
+	public void testRejectFixStateVerified() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.USER);
+		bz.register("analyst", "analyst", Bugzilla.MemberType.SYSTEMANALYST);
+		bz.register("assurance", "assurance", Bugzilla.MemberType.QUALITYASSURANCE);
+		bz.register("dev", "dev", Bugzilla.MemberType.DEVELOPER);
+		bz.login("mina", "mina");
+		bz.login("analyst", "analyst");
+		bz.login("assurance", "assurance");
+		bz.login("dev", "dev");
+		bz.submitBug("user", "it's a bug");
+		bz.confirmBug("analyst", 0);
+		bz.startDevelopment("dev", 0);
+		bz.fixedBug("dev", 0, Bug.Resolution.FIXED, "I fixed it!");
+		bz.approveFix("assurance", 0);
+		bz.rejectFix("assurance", 0);
+	}
+	
 }
