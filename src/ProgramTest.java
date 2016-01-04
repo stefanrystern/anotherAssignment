@@ -1,7 +1,17 @@
 
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
+import com.google.java.contract.InvariantError;
+import com.google.java.contract.PostconditionError;
+import com.google.java.contract.PreconditionError;
+
 public class ProgramTest {
+
+	Bug bug;
+	Bugzilla bz;
 
 	public ProgramTest() {
 		try {
@@ -13,10 +23,14 @@ public class ProgramTest {
 		}
 	}
 
-	@Test
-	public void testRegisterNullName() {
+	@Before
+	public void setUp() {
+		Bug bug = null;
 		Bugzilla bz = null;
+	}
 
+	@Test(expected = PreconditionError.class)
+	public void testRegisterNullName() {
 		try {
 			// Disable file handling by passing false to the constructor
 			bz = new Bugzilla(false);
@@ -34,11 +48,8 @@ public class ProgramTest {
 		}
 	}
 
-	@Test
+	@Test(expected = PreconditionError.class)
 	public void testChangeStateUnconfirmedToInProgress() {
-
-		Bug bug = null;
-
 		try {
 			bug = new Bug(0, "crash on OK press");
 		} catch (BugzillaException e) {
@@ -61,11 +72,8 @@ public class ProgramTest {
 		}
 	}
 
-	@Test
+	@Test(expected = PreconditionError.class)
 	public void testInvalidID() {
-
-		Bug bug = null;
-
 		try {
 			bug = new Bug(-100, "negative ID");
 		} catch (BugzillaException e) {
@@ -74,11 +82,9 @@ public class ProgramTest {
 			System.out.println(e.getErrorMsg());
 		}
 	}
-	@Test
+
+	@Test(expected = PreconditionError.class)
 	public void testInvalidDescription() {
-
-		Bug bug = null;
-
 		try {
 			bug = new Bug(0, null);
 
@@ -86,12 +92,11 @@ public class ProgramTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println(e.getErrorMsg());
-		}		
+		}
 	}
-	@Test
-	public void testSetStateFromConfirmedToInProgress(){
-		Bug bug = null;
 
+	@Test(expected = PreconditionError.class)
+	public void testSetStateFromConfirmedToInProgress() {
 		try {
 			bug = new Bug(0, "set state to unconfirmed");
 			bug.setState(Bug.State.CONFIRMED);
@@ -100,8 +105,8 @@ public class ProgramTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println(e.getErrorMsg());
-		}	
-		
+		}
+
 		try {
 			bug = new Bug(0, "set state to unconfirmed");
 			bug.setState(Bug.State.INPROGRESS);
@@ -109,13 +114,11 @@ public class ProgramTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println(e.getErrorMsg());
-		}	
+		}
 	}
-	@Test
+
+	@Test(expected = PreconditionError.class)
 	public void testSetStateUnconfirmed() {
-
-		Bug bug = null;
-
 		try {
 			bug = new Bug(0, "set state to unconfirmed");
 			bug.setState(Bug.State.UNCONFIRMED);
@@ -123,13 +126,11 @@ public class ProgramTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println(e.getErrorMsg());
-		}		
+		}
 	}
-	@Test
+
+	@Test(expected = PreconditionError.class)
 	public void testSetStateResolved() {
-
-		Bug bug = null;
-
 		try {
 			bug = new Bug(0, "set state to resolved");
 			bug.setState(Bug.State.RESOLVED);
@@ -137,13 +138,11 @@ public class ProgramTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println(e.getErrorMsg());
-		}		
+		}
 	}
-	@Test
+
+	@Test(expected = PreconditionError.class)
 	public void testSetResolvedUnresolved() {
-
-		Bug bug = null;
-
 		try {
 			bug = new Bug(0, "setAsResolved to unresolved");
 			bug.setAsResolved(Bug.Resolution.UNRESOLVED, "should fail");
@@ -151,13 +150,11 @@ public class ProgramTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println(e.getErrorMsg());
-		}		
+		}
 	}
-	@Test
+
+	@Test(expected = PreconditionError.class)
 	public void testSetAsResolvedInvalidSolution() {
-
-		Bug bug = null;
-
 		try {
 			bug = new Bug(0, "set state to resolved");
 			bug.setAsResolved(Bug.Resolution.INVALID, null);
@@ -165,6 +162,6 @@ public class ProgramTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println(e.getErrorMsg());
-		}		
+		}
 	}
 }
