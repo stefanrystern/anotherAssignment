@@ -115,7 +115,7 @@ public class ProgramTest {
 	@Test(expected = PreconditionError.class)
 	public void testUsernameTooShort() throws BugzillaException {
 		bz = new Bugzilla(false);
-		bz.register("m", "mina", Bugzilla.MemberType.USER);
+		bz.register("", "mina", Bugzilla.MemberType.USER);
 	}
 	
 	@Test(expected = PreconditionError.class)
@@ -133,7 +133,7 @@ public class ProgramTest {
 	@Test(expected = PreconditionError.class)
 	public void testRegisterPasswordTooShort() throws BugzillaException {
 		bz = new Bugzilla(false);
-		bz.register("mina", "m", Bugzilla.MemberType.USER);
+		bz.register("mina", "", Bugzilla.MemberType.USER);
 	}
 	
 	@Test(expected = PreconditionError.class)
