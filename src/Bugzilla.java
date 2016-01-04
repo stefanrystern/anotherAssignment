@@ -132,7 +132,7 @@ public class Bugzilla implements Serializable {
 			"getBug(old(bugID)).getSolutionType == Resolution.INVALID",
 			"getBug(old(bugID)).getSolutionInfo == old(solution)"
 	})
-	public void invalidateBug(String username, int bugID, String solution) throws BugStateException {
+	public void invalidateBug(String username, int bugID, String solution) throws BugzillaException {
 		getBug(bugID).setAsResolved(Bug.Resolution.INVALID, solution);
 	}
 
@@ -154,7 +154,7 @@ public class Bugzilla implements Serializable {
 			"getBug(old(bugID)).getState == State.INPROGRESS",
 			"devInProgress(old(username), old(bugID)) == true",
 	})
-	public void startDevelopment(String username, int bugID) throws BugStateException {
+	public void startDevelopment(String username, int bugID) throws BugzillaException {
 		getBug(bugID).setState(Bug.State.INPROGRESS);
 		inProgress.put(username, bugID);
 	}
@@ -178,7 +178,7 @@ public class Bugzilla implements Serializable {
 			"getBug(old(bugID)).getState == State.CONFIRMED",
 			"devInProgress(old(username), old(bugID)) == false",
 	})
-	public void stopDevelopment(String username, int bugID) throws BugStateException {
+	public void stopDevelopment(String username, int bugID) throws BugzillaException {
 		getBug(bugID).setState(Bug.State.CONFIRMED);
 		inProgress.remove(username);
 	}
@@ -206,7 +206,7 @@ public class Bugzilla implements Serializable {
 			"getBug(old(bugID)).getSolutionInfo == old(solution)",
 			"getBug(old(bugID)).getSolutionType == old(resType)",
 	})
-	public void fixedBug(String username, int bugID, Bug.Resolution resType, String solution) throws BugStateException {
+	public void fixedBug(String username, int bugID, Bug.Resolution resType, String solution) throws BugzillaException {
 		getBug(bugID).setAsResolved(resType, solution);
 		inProgress.remove(username);
 	}
@@ -229,7 +229,7 @@ public class Bugzilla implements Serializable {
 			"getBug(old(bugID)).getState == State.VERIFIED",
 			
 	})
-	public void approveFix(String username, int bugID) throws BugStateException {
+	public void approveFix(String username, int bugID) throws BugzillaException {
 		getBug(bugID).setState(Bug.State.VERIFIED);
 	}
 
@@ -251,7 +251,7 @@ public class Bugzilla implements Serializable {
 			"getBug(old(bugID)).getState == State.CONFIRMED",
 			
 	})
-	public void rejectFix(String username, int bugID) throws BugStateException {
+	public void rejectFix(String username, int bugID) throws BugzillaException {
 		getBug(bugID).setState(Bug.State.CONFIRMED);
 	}
 

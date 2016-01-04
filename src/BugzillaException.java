@@ -17,13 +17,25 @@ public class BugzillaException extends Exception {
 		DB_LOAD_ERROR,
 		DB_SAVE_ERROR,
 		ERROR_MISSING_MESSAGE,
-		INVALID_STATE_TRANSITION,
-		
+		//method
+		INVALID_METHOD,		
+		//username
 		USERNAME_NULL,
 		USER_ALREADY_REGISTRED,
+		//password
+		
+		//membertype
+		USER_ACTION_NOT_PERMITTED,
+		//bug id
 		INVALID_BUGID,
-		USER_ACTION_NOT_PERMITTED
-		//...
+		//bug description
+		INVALID_DESCRIPTION,
+		//bug state
+		INVALID_STATE_TRANSITION,
+		//bug solutionType
+		INVALID_SOLUTION_TYPE,
+		//bug solutionInfo
+		INVALID_SOLUTION_INFO
 	}
 	
 	private static void addMessage() {
@@ -39,6 +51,12 @@ public class BugzillaException extends Exception {
 		msgList.put(ErrorType.INVALID_BUGID, "Error: Invalid bug ID");
 		msgList.put(ErrorType.USER_ACTION_NOT_PERMITTED, "User does not have permission for this action");
 		//...
+		msgList.put(ErrorType.INVALID_DESCRIPTION, "Error: Invalid description");
+		msgList.put(ErrorType.INVALID_METHOD, "Error: Invalid method for operation");
+		msgList.put(ErrorType.INVALID_SOLUTION_INFO, "Error: Invalid solution info");
+		msgList.put(ErrorType.INVALID_SOLUTION_TYPE, "Error: Invalid solution type");
+		
+		
 	}
 	
 	public static void init() throws BugzillaException {

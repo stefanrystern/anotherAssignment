@@ -57,6 +57,9 @@ public class ProgramTest {
 			e.printStackTrace();
 			System.out.println(e.getErrorMsg());
 			
+		} catch (BugzillaException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
     }
 

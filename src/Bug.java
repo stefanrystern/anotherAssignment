@@ -52,6 +52,9 @@ public class Bug implements Serializable {
 		if (ID < 0) {
 			throw new BugzillaException(BugzillaException.ErrorType.INVALID_BUGID);
 		}
+		if (description == null || description.length()<=0) {
+			throw new BugzillaException(BugzillaException.ErrorType.INVALID_DESCRIPTION);
+		}
 
 		// ...
 
@@ -89,10 +92,16 @@ public class Bug implements Serializable {
 	 * state and does not go back to it. State RESOLVED is set by the method
 	 * "setAsResolved"
 	 */
-	public void setState(State st) throws BugStateException {
+	public void setState(State st) throws BugzillaException {
 
 		if (st == State.INPROGRESS && state != State.CONFIRMED) {
 			throw new BugStateException(state, st);
+		}
+		if(st == State.UNCONFIRMED){
+			throw new BugStateException(state, st);
+		}
+		if(st == State.RESOLVED){
+			throw new BugzillaException(BugzillaException.ErrorType.INVALID_METHOD);
 		}
 
 		// ...
@@ -123,7 +132,15 @@ public class Bug implements Serializable {
 		"solutionType == old(type)",
 		"solutionInfo == old(solution)",
 	})
-	public void setAsResolved(Resolution type, String solution) throws BugStateException {
+	public void setAsResolved(Resolution type, String solution) throws BugzillaException {
+		if(type == Resolution.UNRESOLVED){
+			throw new BugzillaException(BugzillaException.ErrorType.INVALID_SOLUTION_TYPE);
+		}
+		if(solution.length() <= 0){
+			throw new BugzillaException(BugzillaException.ErrorType.INVALID_SOLUTION_INFO);
+		}
+		
+		
 		state = State.RESOLVED;
 		solutionType = type;
 		solutionInfo = solution;
