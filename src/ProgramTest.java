@@ -103,92 +103,125 @@ public class ProgramTest {
 		bug = new Bug(0, "set state to resolved");
 		bug.setAsResolved(Bug.Resolution.FIXED, "fixed it");
 	}
-	// Bugzilla part
-
+	// Bugzilla register
 	@Test(expected = PreconditionError.class)
-	public void testRegisterNullUsername() {
-
+	public void testAlreadyRegistered() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.USER);
+		bz.register("mina", "mina", Bugzilla.MemberType.USER);
 	}
 
 	@Test(expected = PreconditionError.class)
-	public void testAlreadyRegistered() {
-
+	public void testUsernameTooShort() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("m", "mina", Bugzilla.MemberType.USER);
+	}
+	
+	@Test(expected = PreconditionError.class)
+	public void testUsernameTooLong() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("minaminaminaminaminaminamina", "mina", Bugzilla.MemberType.USER);
 	}
 
 	@Test(expected = PreconditionError.class)
-	public void testUsernameLength() {
-
+	public void testRegisterNullPassword() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("mina", null, Bugzilla.MemberType.USER);
 	}
 
 	@Test(expected = PreconditionError.class)
-	public void testRegisterNullPassword() {
-
+	public void testRegisterPasswordTooShort() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("mina", "m", Bugzilla.MemberType.USER);
+	}
+	
+	@Test(expected = PreconditionError.class)
+	public void testRegisterPasswordTooLong() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("mina", "minaminaminaminaminaminamina", Bugzilla.MemberType.USER);
 	}
 
 	@Test(expected = PreconditionError.class)
-	public void testRegisterPasswordLength() {
+	public void testRegisterMemberType() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", null);
+	}
 
+	// Bugzilla Login
+	@Test(expected = PreconditionError.class)
+	public void testLoginNullUsername() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.login(null, "mina");
 	}
 
 	@Test(expected = PreconditionError.class)
-	public void testRegisterMemberType() {
-
-	}
-
-	// Login
-	@Test(expected = PreconditionError.class)
-	public void testLoginNullUsername() {
-
+	public void testLoginNullPassword() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.login("mina", null);
 	}
 
 	@Test(expected = PreconditionError.class)
-	public void testLoginNullPassword() {
-
+	public void testLoginInvalidPassword() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.USER);
+		bz.login("minas", "minas");
 	}
 
 	@Test(expected = PreconditionError.class)
-	public void testLoginInvalidPassword() {
+	public void testLoginIsLoggedIn() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.USER);
+		bz.login("mina", "mina");
+		bz.login("mina", "mina");
+	}
 
+	// bugzilla Logout
+	@Test(expected = PreconditionError.class)
+	public void testLogoutNullUsername() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.logout(null);
 	}
 
 	@Test(expected = PreconditionError.class)
-	public void testLoginIsLoggedIn() {
-
-	}
-
-	// Logout
-	@Test(expected = PreconditionError.class)
-	public void testLogoutNullUsername() {
-
-	}
-
-	@Test(expected = PreconditionError.class)
-	public void testLogoutIsNotLoggedIn() {
-
+	public void testLogoutIsNotLoggedIn() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.logout("mina");
 	}
 
 	// submitbug
 	@Test(expected = PreconditionError.class)
-	public void testSubmitBugNullUsername() {
-
+	public void testSubmitBugNullUsername() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.submitBug(null, "test bug");
 	}
 
 	@Test(expected = PreconditionError.class)
-	public void testSubmitBugMemberTypeUser() {
-
+	public void testSubmitBugMemberTypeUser() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.SYSTEMANALYST);
+		bz.login("mina", "mina");
+		bz.submitBug("mina", "test bug");
 	}
 
 	@Test(expected = PreconditionError.class)
-	public void testSubmitBugNotLoggedIn() {
-
+	public void testSubmitBugNotLoggedIn() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.submitBug("mina", "test bug");
 	}
 
 	@Test(expected = PreconditionError.class)
-	public void testSubmitBugDescriptionLength() {
-
+	public void testSubmitBugDescriptionLength() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.submitBug("mina", "");
+	}
+	
+	@Test(expected = PreconditionError.class)
+	public void testSubmitBugDescriptionNull() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.submitBug("mina", null);
 	}
 
-	// confirmbug
+	// bugzilla confirmbug
 	@Test(expected = PreconditionError.class)
 	public void testConfirmBugNullUsername() {
 
