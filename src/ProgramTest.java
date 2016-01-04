@@ -566,31 +566,141 @@ public class ProgramTest {
 	//bugzilla fixedBug
 	@Test(expected = PreconditionError.class)
 	public void testFixedBugInvalidSolutionType() throws BugzillaException {
-		
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.USER);
+		bz.register("analyst", "analyst", Bugzilla.MemberType.SYSTEMANALYST);
+		bz.register("assurance", "assurance", Bugzilla.MemberType.QUALITYASSURANCE);
+		bz.register("dev", "dev", Bugzilla.MemberType.DEVELOPER);
+		bz.login("mina", "mina");
+		bz.login("analyst", "analyst");
+		bz.login("assurance", "assurance");
+		bz.login("dev", "dev");
+		bz.submitBug("user", "it's a bug");
+		bz.confirmBug("analyst", 0);
+		bz.startDevelopment("dev", 0);
+		bz.fixedBug("dev", 0, null, "I fixed it!");
 	}
 	public void testFixedBugInvalidSolutionInfo() throws BugzillaException {
-			
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.USER);
+		bz.register("analyst", "analyst", Bugzilla.MemberType.SYSTEMANALYST);
+		bz.register("assurance", "assurance", Bugzilla.MemberType.QUALITYASSURANCE);
+		bz.register("dev", "dev", Bugzilla.MemberType.DEVELOPER);
+		bz.login("mina", "mina");
+		bz.login("analyst", "analyst");
+		bz.login("assurance", "assurance");
+		bz.login("dev", "dev");
+		bz.submitBug("user", "it's a bug");
+		bz.confirmBug("analyst", 0);
+		bz.startDevelopment("dev", 0);
+		bz.fixedBug("dev", 0, Bug.Resolution.FIXED, null);
 	}
 	public void testFixedBugNullUsername() throws BugzillaException {
-		
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.USER);
+		bz.register("analyst", "analyst", Bugzilla.MemberType.SYSTEMANALYST);
+		bz.register("assurance", "assurance", Bugzilla.MemberType.QUALITYASSURANCE);
+		bz.register("dev", "dev", Bugzilla.MemberType.DEVELOPER);
+		bz.login("mina", "mina");
+		bz.login("analyst", "analyst");
+		bz.login("assurance", "assurance");
+		bz.login("dev", "dev");
+		bz.submitBug("user", "it's a bug");
+		bz.confirmBug("analyst", 0);
+		bz.startDevelopment("dev", 0);
+		bz.fixedBug(null, 0, Bug.Resolution.FIXED, "I fixed it!");
 	}
 	public void testFixedBugInvalidBugID() throws BugzillaException {
-		
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.USER);
+		bz.register("analyst", "analyst", Bugzilla.MemberType.SYSTEMANALYST);
+		bz.register("assurance", "assurance", Bugzilla.MemberType.QUALITYASSURANCE);
+		bz.register("dev", "dev", Bugzilla.MemberType.DEVELOPER);
+		bz.login("mina", "mina");
+		bz.login("analyst", "analyst");
+		bz.login("assurance", "assurance");
+		bz.login("dev", "dev");
+		bz.submitBug("user", "it's a bug");
+		bz.confirmBug("analyst", 0);
+		bz.startDevelopment("dev", 0);
+		bz.fixedBug("dev", -10, Bug.Resolution.FIXED, "I fixed it!");
 	}
 	public void testFixedBugMemberTypeDev() throws BugzillaException {
-		
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.USER);
+		bz.register("analyst", "analyst", Bugzilla.MemberType.SYSTEMANALYST);
+		bz.register("assurance", "assurance", Bugzilla.MemberType.QUALITYASSURANCE);
+		bz.register("dev", "dev", Bugzilla.MemberType.DEVELOPER);
+		bz.login("mina", "mina");
+		bz.login("analyst", "analyst");
+		bz.login("assurance", "assurance");
+		bz.login("dev", "dev");
+		bz.submitBug("user", "it's a bug");
+		bz.confirmBug("analyst", 0);
+		bz.startDevelopment("dev", 0);
+		bz.fixedBug("mina", 0, Bug.Resolution.FIXED, "I fixed it!");
 	}
 	public void testFixedBugLoggedOut() throws BugzillaException {
-		
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.USER);
+		bz.register("analyst", "analyst", Bugzilla.MemberType.SYSTEMANALYST);
+		bz.register("assurance", "assurance", Bugzilla.MemberType.QUALITYASSURANCE);
+		bz.register("dev", "dev", Bugzilla.MemberType.DEVELOPER);
+		bz.login("mina", "mina");
+		bz.login("analyst", "analyst");
+		bz.login("assurance", "assurance");
+		bz.login("dev", "dev");
+		bz.submitBug("user", "it's a bug");
+		bz.confirmBug("analyst", 0);
+		bz.startDevelopment("dev", 0);
+		bz.logout("dev");
+		bz.fixedBug("dev", 0, Bug.Resolution.FIXED, "I fixed it!");
 	}
-	public void testFixedBugInProgress() throws BugzillaException {
-		
+	public void testFixedBugNotInProgress() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.USER);
+		bz.register("analyst", "analyst", Bugzilla.MemberType.SYSTEMANALYST);
+		bz.register("assurance", "assurance", Bugzilla.MemberType.QUALITYASSURANCE);
+		bz.register("dev", "dev", Bugzilla.MemberType.DEVELOPER);
+		bz.login("mina", "mina");
+		bz.login("analyst", "analyst");
+		bz.login("assurance", "assurance");
+		bz.login("dev", "dev");
+		bz.submitBug("user", "it's a bug");
+		bz.confirmBug("analyst", 0);
+		bz.fixedBug("dev", 0, Bug.Resolution.FIXED, "I fixed it!");
 	}
 	public void testFixedBugVerified() throws BugzillaException {
-		
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.USER);
+		bz.register("analyst", "analyst", Bugzilla.MemberType.SYSTEMANALYST);
+		bz.register("assurance", "assurance", Bugzilla.MemberType.QUALITYASSURANCE);
+		bz.register("dev", "dev", Bugzilla.MemberType.DEVELOPER);
+		bz.login("mina", "mina");
+		bz.login("analyst", "analyst");
+		bz.login("assurance", "assurance");
+		bz.login("dev", "dev");
+		bz.submitBug("user", "it's a bug");
+		bz.invalidateBug("analyst", 0, "it's not that bad");
+		bz.approveFix("assurance", 0);
+		bz.fixedBug("dev", 0, Bug.Resolution.FIXED, "I fixed it!");
 	}
 	public void testFixedBugDevInProgress() throws BugzillaException {
-		
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.USER);
+		bz.register("analyst", "analyst", Bugzilla.MemberType.SYSTEMANALYST);
+		bz.register("assurance", "assurance", Bugzilla.MemberType.QUALITYASSURANCE);
+		bz.register("dev", "dev", Bugzilla.MemberType.DEVELOPER);
+		bz.register("dev2", "dev2", Bugzilla.MemberType.DEVELOPER);
+		bz.login("mina", "mina");
+		bz.login("analyst", "analyst");
+		bz.login("assurance", "assurance");
+		bz.login("dev", "dev");
+		bz.login("dev2", "dev2");
+		bz.submitBug("user", "it's a bug");
+		bz.confirmBug("analyst", 0);
+		bz.startDevelopment("dev", 0);
+		bz.fixedBug("dev2", 0, Bug.Resolution.FIXED, "I fixed it!");
 	}
 
 	//bugzilla approvedFix
