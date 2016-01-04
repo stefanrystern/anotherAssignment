@@ -115,19 +115,20 @@ public class Bugzilla implements Serializable {
 	 * The method allows a SYSTEMANALYST to invalidate a bug
 	 */
 	@Requires({ 
-			"username != null", 
+			"username != null",
 			"bugID !=null",
+			"bugID < bugs.size()", 
+			"bugID >= 0",
 			"solution != null",
 			"isLoggedIn(username) == true",
 			"getType(username) == MemberType.SYSTEMANALYST",
-			"bugID < bugs.size()", 
-			"bugID >= 0",
 			"bugExists(bugID) == true",
 			"getBug(bugID).getState == State.UNCONFIRMED",
 	})
 	@Ensures({ 
 			"getBug(old(bugID)).getState == State.RESOLVED",
-			"getBug(old(bugID)).getState == Resolution.INVALID"
+			"getBug(old(bugID)).getSolutionType == Resolution.INVALID",
+			"getBug(old(bugID)).getSolutionInfo == old(solution)"
 	})
 	public void invalidateBug(String username, int bugID, String solution) throws BugStateException {
 		getBug(bugID).setAsResolved(Bug.Resolution.INVALID, solution);
