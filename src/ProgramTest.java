@@ -223,32 +223,77 @@ public class ProgramTest {
 
 	// bugzilla confirmbug
 	@Test(expected = PreconditionError.class)
-	public void testConfirmBugNullUsername() {
-
+	public void testConfirmBugNullUsername() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.confirmBug(null, 0);
 	}
 
 	@Test(expected = PreconditionError.class)
-	public void testConfirmBugIDoutOfBounds() {
-
+	public void testConfirmBugIDoutOfBounds() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.SYSTEMANALYST);
+		bz.login("mina", "mina");
+		bz.confirmBug("mina", 3);
+	}
+	
+	@Test(expected = PreconditionError.class)
+	public void testConfirmBugIDNegative() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.SYSTEMANALYST);
+		bz.login("mina", "mina");
+		bz.confirmBug("mina", -1);
+	}
+	
+	@Test(expected = PreconditionError.class)
+	public void testConfirmBugDoesntExist() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.SYSTEMANALYST);
+		bz.login("mina", "mina");
+		bz.confirmBug("mina", 3);
 	}
 
 	@Test(expected = PreconditionError.class)
-	public void testConfirmBugTypeNotSystemAnalyst() {
-
+	public void testConfirmBugTypeNotSystemAnalyst() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.USER);
+		bz.login("mina", "mina");
+		bz.submitBug("mina", "test bug");
+		bz.confirmBug("mina", 0);
 	}
 
 	@Test(expected = PreconditionError.class)
-	public void testConfirmBugNotLoggedIn() {
-
+	public void testConfirmBugNotLoggedIn() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.USER);
+		bz.login("mina", "mina");
+		bz.submitBug("mina", "test bug");
+		bz.logout("mina");
+		bz.confirmBug("mina", 0);
 	}
 
 	@Test(expected = PreconditionError.class)
-	public void testConfirmBugStateNotUnconfirmed() {
-
+	public void testConfirmBugStateNotUnconfirmed() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.USER);
+		bz.login("mina", "mina");
+		bz.submitBug("mina", "test bug");
+		bz.confirmBug("mina", 0);
 	}
 
 	@Test(expected = PreconditionError.class)
-	public void testConfirmBugStateVerified() {
-
+	public void testConfirmBugStateVerified() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register("mina", "mina", Bugzilla.MemberType.USER);
+		bz.register("analyst", "analyst", Bugzilla.MemberType.SYSTEMANALYST);
+		bz.register("assurance", "assurance", Bugzilla.MemberType.QUALITYASSURANCE);
+		bz.login("mina", "mina");
+		bz.login("analyst", "analyst");
+		bz.login("assurance", "assurance");
+		bz.submitBug("mina", "test bug");
+		bz.invalidateBug("analyst", 0, "solution");
+		bz.approveFix("assurance", 0);
+		bz.confirmBug("analyst", 0);
 	}
+	
+	//bugzilla invalidateBug
 }
