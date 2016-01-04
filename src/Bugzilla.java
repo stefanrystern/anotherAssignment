@@ -69,19 +69,20 @@ public class Bugzilla implements Serializable {
 	}
 
 	@Requires({ "username != null",
-			// TODO
+			"isLoggedIn(username) == true",
 			"getType(username) == MemberType.USER",
-			// TODO
+			"description != null", "description.length()>0",
 
 	})
 	@Ensures({ "bugCount() == old(bugCount()) + 1",
-			// TODO
+			"getBug(lastBugID()).getBugDescription().equals(old(description))",
+			"getBug(lastBugID()).getID() == bugs.size()-1",
 	})
 	/*
 	 * The method allows a USER to submit a new bug
 	 */
 	public void submitBug(String username, String description) throws BugzillaException {
-
+		
 		if (username == null) {
 			throwBex(BugzillaException.ErrorType.USERNAME_NULL);
 		}
