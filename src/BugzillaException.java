@@ -17,15 +17,24 @@ public class BugzillaException extends Exception {
 		DB_LOAD_ERROR,
 		DB_SAVE_ERROR,
 		ERROR_MISSING_MESSAGE,
+		//login
+		INVALID_LOGIN_INFO,
+		USER_ALREADY_LOGGED_IN,
+		USER_ALREADY_LOGGED_OFF,
 		//method
-		INVALID_METHOD,		
+		INVALID_METHOD,
+		//developer
+		ANOTHER_DEVELOPER_ALREADY_WORKING,
 		//username
 		USERNAME_NULL,
+		INVALID_USERNAME_LENGTH,
 		USER_ALREADY_REGISTRED,
 		//password
-		
+		PASSWD_NULL,
+		INVALID_PASSWD_LENGTH,
 		//membertype
 		USER_ACTION_NOT_PERMITTED,
+		INVALID_MEMBER_TYPE,
 		//bug id
 		INVALID_BUGID,
 		//bug description
@@ -55,7 +64,14 @@ public class BugzillaException extends Exception {
 		msgList.put(ErrorType.INVALID_METHOD, "Error: Invalid method for operation");
 		msgList.put(ErrorType.INVALID_SOLUTION_INFO, "Error: Invalid solution info");
 		msgList.put(ErrorType.INVALID_SOLUTION_TYPE, "Error: Invalid solution type");
-		
+		msgList.put(ErrorType.INVALID_USERNAME_LENGTH, "Error: Invalid username length");
+		msgList.put(ErrorType.PASSWD_NULL, "Error: Object passwd is null");
+		msgList.put(ErrorType.INVALID_PASSWD_LENGTH, "Error: Invalid passwd length");
+		msgList.put(ErrorType.INVALID_MEMBER_TYPE, "Error: Invalid member type");
+		msgList.put(ErrorType.INVALID_LOGIN_INFO, "Error: Invalid login info");
+		msgList.put(ErrorType.USER_ALREADY_LOGGED_IN, "Error: User already logged in");
+		msgList.put(ErrorType.USER_ALREADY_LOGGED_OFF, "Error: User already logged off");
+		msgList.put(ErrorType.ANOTHER_DEVELOPER_ALREADY_WORKING, "Error: Another developer is working on the bug");
 		
 	}
 	

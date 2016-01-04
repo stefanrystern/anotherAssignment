@@ -41,22 +41,65 @@ public class Bugzilla implements Serializable {
 		if (isRegistered(username)) {
 			throwBex(BugzillaException.ErrorType.USER_ALREADY_REGISTRED);
 		}
+		
+		if(username.length()<=0 || username.length()>=20){
+			throwBex(BugzillaException.ErrorType.INVALID_USERNAME_LENGTH);
+		}
+		
+		if (passwd == null) {
+			throwBex(BugzillaException.ErrorType.PASSWD_NULL);
+		}
+		
+		if (passwd.length()<=0 || passwd.length()>=20) {
+			throwBex(BugzillaException.ErrorType.INVALID_PASSWD_LENGTH);
+		}
+		
+		if(type != MemberType.SYSTEMANALYST || type != MemberType.QUALITYASSURANCE || type != MemberType.DEVELOPER || type != MemberType.USER){
+			throwBex(BugzillaException.ErrorType.INVALID_MEMBER_TYPE);
+		}
+		
+		
 
 		members.put(username, getMember(passwd, type));
 	}
 
-	@Requires({ "passwd == getPasswd(username)", })
+	@Requires({ 
+		"username != null", 
+		"passwd != null",
+		"passwd == getPasswd(username)", 
+		"isLoggedIn(username) == false",
+		})
 	@Ensures({ "isLoggedIn(old(username)) == true", })
 	public void login(String username, String passwd) throws BugzillaException {
-
+		if (username == null) {
+			throwBex(BugzillaException.ErrorType.USERNAME_NULL);
+		}
+		if (passwd == null) {
+			throwBex(BugzillaException.ErrorType.PASSWD_NULL);
+		}
+		if (passwd != getPasswd(username)) {
+			throwBex(BugzillaException.ErrorType.INVALID_LOGIN_INFO);
+		}
+		if (isLoggedIn(username)) {
+			throwBex(BugzillaException.ErrorType.USER_ALREADY_LOGGED_IN);
+		}
+		
 		loggedIn.add(username);
 	}
 
-	@Requires({ "isLoggedIn(username) == true", })
+	@Requires({ 
+		"username != null", 
+		"isLoggedIn(username) == true", 
+		})
 	@Ensures({ "isLoggedIn(old(username)) == false", })
 
 	public void logout(String username) throws BugzillaException {
-
+		if (username == null) {
+			throwBex(BugzillaException.ErrorType.USERNAME_NULL);
+		}
+		if(!isLoggedIn(username)){
+			throwBex(BugzillaException.ErrorType.USER_ALREADY_LOGGED_OFF);
+		}
 		loggedIn.remove(username);
 	}
 
@@ -85,6 +128,14 @@ public class Bugzilla implements Serializable {
 		if (getType(username) != MemberType.USER) {
 			throwBex(BugzillaException.ErrorType.USER_ACTION_NOT_PERMITTED);
 		}
+		
+		if(!isLoggedIn(username)){
+			throwBex(BugzillaException.ErrorType.USER_ALREADY_LOGGED_OFF);
+		}
+		
+		if(description == null || description.length()<=0){
+			throwBex(BugzillaException.ErrorType.INVALID_DESCRIPTION);
+		}
 
 		int bugID = bugs.size();
 		bugs.put(bugID, new Bug(bugID, description));
@@ -95,20 +146,37 @@ public class Bugzilla implements Serializable {
 	 */
 	@Requires({ 
 			"username != null", 
-			"bugID !=null", 
 			"isLoggedIn(username) == true",
 			"getType(username) == MemberType.SYSTEMANALYST",
 			"bugID < bugs.size()", 
 			"bugID >= 0",
 			"bugExists(bugID) == true",
-			"getBug(bugID).getState == State.UNCONFIRMED",
-			"getBug(bugID).getState != State.VERIFIED",
+			"getBug(bugID).getState() == Bug.State.UNCONFIRMED",
+			"getBug(bugID).getState() != Bug.State.VERIFIED",
 	})
 	@Ensures({ 
 			"getBug(old(bugID)).getState == State.CONFIRMED",
 	})
 	public void confirmBug(String username, int bugID) throws BugzillaException {
 
+		if (username == null) {
+			throwBex(BugzillaException.ErrorType.USERNAME_NULL);
+		}
+		if (bugID >= bugs.size() || bugID < 0 || !bugExists(bugID)) {
+			throwBex(BugzillaException.ErrorType.INVALID_BUGID);
+		}
+		if (getType(username) != MemberType.SYSTEMANALYST) {
+			throwBex(BugzillaException.ErrorType.USER_ACTION_NOT_PERMITTED);
+		}
+		if(!isLoggedIn(username)){
+			throwBex(BugzillaException.ErrorType.USER_ALREADY_LOGGED_OFF);
+		}
+		if (getBug(bugID).getState() != Bug.State.UNCONFIRMED) {
+			throw new BugStateException(Bug.State.CONFIRMED, getBug(bugID).getState());
+		}
+		if (getBug(bugID).getState() == Bug.State.VERIFIED) {
+			throw new BugStateException(Bug.State.CONFIRMED, Bug.State.VERIFIED);
+		}
 		getBug(bugID).setState(Bug.State.CONFIRMED);
 	}
 
@@ -117,15 +185,14 @@ public class Bugzilla implements Serializable {
 	 */
 	@Requires({ 
 			"username != null",
-			"bugID !=null",
 			"bugID < bugs.size()", 
 			"bugID >= 0",
 			"solution != null",
 			"isLoggedIn(username) == true",
 			"getType(username) == MemberType.SYSTEMANALYST",
 			"bugExists(bugID) == true",
-			"getBug(bugID).getState == State.UNCONFIRMED",
-			"getBug(bugID).getState != State.VERIFIED",
+			"getBug(bugID).getState() == Bug.State.UNCONFIRMED",
+			"getBug(bugID).getState() != Bug.State.VERIFIED",
 	})
 	@Ensures({ 
 			"getBug(old(bugID)).getState == State.RESOLVED",
@@ -133,6 +200,24 @@ public class Bugzilla implements Serializable {
 			"getBug(old(bugID)).getSolutionInfo == old(solution)"
 	})
 	public void invalidateBug(String username, int bugID, String solution) throws BugzillaException {
+		if (username == null) {
+			throwBex(BugzillaException.ErrorType.USERNAME_NULL);
+		}
+		if (bugID >= bugs.size() || bugID < 0 || !bugExists(bugID)) {
+			throwBex(BugzillaException.ErrorType.INVALID_BUGID);
+		}
+		if (getType(username) != MemberType.SYSTEMANALYST) {
+			throwBex(BugzillaException.ErrorType.USER_ACTION_NOT_PERMITTED);
+		}
+		if(!isLoggedIn(username)){
+			throwBex(BugzillaException.ErrorType.USER_ALREADY_LOGGED_OFF);
+		}
+		if (getBug(bugID).getState() != Bug.State.UNCONFIRMED) {
+			throw new BugStateException(Bug.State.RESOLVED, getBug(bugID).getState());
+		}
+		if (getBug(bugID).getState() == Bug.State.VERIFIED) {
+			throw new BugStateException(Bug.State.RESOLVED, Bug.State.VERIFIED);
+		}
 		getBug(bugID).setAsResolved(Bug.Resolution.INVALID, solution);
 	}
 
@@ -141,20 +226,38 @@ public class Bugzilla implements Serializable {
 	 */
 	@Requires({ 
 			"username != null",
-			"bugID !=null",
 			"bugID < bugs.size()", 
 			"bugID >= 0",
 			"isLoggedIn(username) == true",
 			"getType(username) == MemberType.DEVELOPER",
 			"bugExists(bugID) == true",
-			"getBug(bugID).getState == State.CONFIRMED",
-			"getBug(bugID).getState != State.VERIFIED",
+			"getBug(bugID).getState() == Bug.State.CONFIRMED",
+			"getBug(bugID).getState() != Bug.State.VERIFIED",
 	})
 	@Ensures({ 
 			"getBug(old(bugID)).getState == State.INPROGRESS",
 			"devInProgress(old(username), old(bugID)) == true",
 	})
 	public void startDevelopment(String username, int bugID) throws BugzillaException {
+		if (username == null) {
+			throwBex(BugzillaException.ErrorType.USERNAME_NULL);
+		}
+		if (bugID >= bugs.size() || bugID < 0 || !bugExists(bugID)) {
+			throwBex(BugzillaException.ErrorType.INVALID_BUGID);
+		}
+		if (getType(username) != MemberType.DEVELOPER) {
+			throwBex(BugzillaException.ErrorType.USER_ACTION_NOT_PERMITTED);
+		}
+		if(!isLoggedIn(username)){
+			throwBex(BugzillaException.ErrorType.USER_ALREADY_LOGGED_OFF);
+		}
+		if (getBug(bugID).getState() != Bug.State.CONFIRMED) {
+			throw new BugStateException(Bug.State.INPROGRESS, getBug(bugID).getState());
+		}
+		if (getBug(bugID).getState() == Bug.State.VERIFIED) {
+			throw new BugStateException(Bug.State.INPROGRESS, Bug.State.VERIFIED);
+		}
+		
 		getBug(bugID).setState(Bug.State.INPROGRESS);
 		inProgress.put(username, bugID);
 	}
@@ -166,19 +269,40 @@ public class Bugzilla implements Serializable {
 			"username != null",
 			"bugID !=null",
 			"bugID < bugs.size()", 
-			"bugID >= 0",
 			"isLoggedIn(username) == true",
 			"getType(username) == MemberType.DEVELOPER",
 			"bugExists(bugID) == true",
-			"getBug(bugID).getState == State.INPROGRESS",
+			"getBug(bugID).getState() == Bug.State.INPROGRESS",
 			"devInProgress(username, bugID) == true",
-			"getBug(bugID).getState != State.VERIFIED",
+			"getBug(bugID).getState() != Bug.State.VERIFIED",
 	})
 	@Ensures({ 
 			"getBug(old(bugID)).getState == State.CONFIRMED",
 			"devInProgress(old(username), old(bugID)) == false",
 	})
 	public void stopDevelopment(String username, int bugID) throws BugzillaException {
+		if (username == null) {
+			throwBex(BugzillaException.ErrorType.USERNAME_NULL);
+		}
+		if (bugID >= bugs.size() || bugID < 0 || !bugExists(bugID)) {
+			throwBex(BugzillaException.ErrorType.INVALID_BUGID);
+		}
+		if (getType(username) != MemberType.DEVELOPER) {
+			throwBex(BugzillaException.ErrorType.USER_ACTION_NOT_PERMITTED);
+		}
+		if(!isLoggedIn(username)){
+			throwBex(BugzillaException.ErrorType.USER_ALREADY_LOGGED_OFF);
+		}
+		if (getBug(bugID).getState() != Bug.State.INPROGRESS) {
+			throw new BugStateException(Bug.State.CONFIRMED, getBug(bugID).getState());
+		}
+		if (getBug(bugID).getState() == Bug.State.VERIFIED) {
+			throw new BugStateException(Bug.State.CONFIRMED, Bug.State.VERIFIED);
+		}
+		if (!devInProgress(username, bugID)) {
+			throwBex(BugzillaException.ErrorType.ANOTHER_DEVELOPER_ALREADY_WORKING);
+		}
+		
 		getBug(bugID).setState(Bug.State.CONFIRMED);
 		inProgress.remove(username);
 	}
@@ -188,7 +312,6 @@ public class Bugzilla implements Serializable {
 	 */
 	@Requires({ 
 			"username != null",
-			"bugID !=null",
 			"resType != null",
 			"solution !=null",
 			"bugID < bugs.size()", 
@@ -196,9 +319,9 @@ public class Bugzilla implements Serializable {
 			"isLoggedIn(username) == true",
 			"getType(username) == MemberType.DEVELOPER",
 			"bugExists(bugID) == true",
-			"getBug(bugID).getState == State.INPROGRESS",
+			"getBug(bugID).getState() == Bug.State.INPROGRESS",
 			"devInProgress(username, bugID) == true",
-			"getBug(bugID).getState != State.VERIFIED",
+			"getBug(bugID).getState() != Bug.State.VERIFIED",
 	})
 	@Ensures({ 
 			"getBug(old(bugID)).getState == State.RESOLVED",
@@ -207,6 +330,34 @@ public class Bugzilla implements Serializable {
 			"getBug(old(bugID)).getSolutionType == old(resType)",
 	})
 	public void fixedBug(String username, int bugID, Bug.Resolution resType, String solution) throws BugzillaException {
+		if (resType == null) {
+			throwBex(BugzillaException.ErrorType.INVALID_SOLUTION_TYPE);
+		}
+		if (solution == null) {
+			throwBex(BugzillaException.ErrorType.INVALID_SOLUTION_INFO);
+		}
+		if (username == null) {
+			throwBex(BugzillaException.ErrorType.USERNAME_NULL);
+		}
+		if (bugID >= bugs.size() || bugID < 0 || !bugExists(bugID)) {
+			throwBex(BugzillaException.ErrorType.INVALID_BUGID);
+		}
+		if (getType(username) != MemberType.DEVELOPER) {
+			throwBex(BugzillaException.ErrorType.USER_ACTION_NOT_PERMITTED);
+		}
+		if(!isLoggedIn(username)){
+			throwBex(BugzillaException.ErrorType.USER_ALREADY_LOGGED_OFF);
+		}
+		if (getBug(bugID).getState() != Bug.State.INPROGRESS) {
+			throw new BugStateException(Bug.State.RESOLVED, getBug(bugID).getState());
+		}
+		if (getBug(bugID).getState() == Bug.State.VERIFIED) {
+			throw new BugStateException(Bug.State.RESOLVED, Bug.State.VERIFIED);
+		}
+		if (!devInProgress(username, bugID)) {
+			throwBex(BugzillaException.ErrorType.ANOTHER_DEVELOPER_ALREADY_WORKING);
+		}
+		
 		getBug(bugID).setAsResolved(resType, solution);
 		inProgress.remove(username);
 	}
@@ -218,18 +369,39 @@ public class Bugzilla implements Serializable {
 			"username != null",
 			"bugID !=null",
 			"bugID < bugs.size()", 
-			"bugID >= 0",
 			"isLoggedIn(username) == true",
 			"getType(username) == MemberType.QUALITYASSURANCE",
 			"bugExists(bugID) == true",
-			"getBug(bugID).getState == State.RESOLVED",
-			"getBug(bugID).getState != State.VERIFIED",
+			"getBug(bugID).getState() == Bug.State.RESOLVED",
+			"getBug(bugID).getState() != Bug.State.VERIFIED",
 	})
 	@Ensures({ 
 			"getBug(old(bugID)).getState == State.VERIFIED",
 			
 	})
 	public void approveFix(String username, int bugID) throws BugzillaException {
+		if (username == null) {
+			throwBex(BugzillaException.ErrorType.USERNAME_NULL);
+		}
+		if (bugID >= bugs.size() || bugID < 0 || !bugExists(bugID)) {
+			throwBex(BugzillaException.ErrorType.INVALID_BUGID);
+		}
+		if (getType(username) != MemberType.QUALITYASSURANCE) {
+			throwBex(BugzillaException.ErrorType.USER_ACTION_NOT_PERMITTED);
+		}
+		if(!isLoggedIn(username)){
+			throwBex(BugzillaException.ErrorType.USER_ALREADY_LOGGED_OFF);
+		}
+		if (getBug(bugID).getState() != Bug.State.RESOLVED) {
+			throw new BugStateException(Bug.State.VERIFIED, getBug(bugID).getState());
+		}
+		if (getBug(bugID).getState() == Bug.State.VERIFIED) {
+			throw new BugStateException(Bug.State.VERIFIED, Bug.State.VERIFIED);
+		}
+		if (!devInProgress(username, bugID)) {
+			throwBex(BugzillaException.ErrorType.ANOTHER_DEVELOPER_ALREADY_WORKING);
+		}
+		
 		getBug(bugID).setState(Bug.State.VERIFIED);
 	}
 
@@ -252,6 +424,28 @@ public class Bugzilla implements Serializable {
 			
 	})
 	public void rejectFix(String username, int bugID) throws BugzillaException {
+		if (username == null) {
+			throwBex(BugzillaException.ErrorType.USERNAME_NULL);
+		}
+		if (bugID >= bugs.size() || bugID < 0 || !bugExists(bugID)) {
+			throwBex(BugzillaException.ErrorType.INVALID_BUGID);
+		}
+		if (getType(username) != MemberType.QUALITYASSURANCE) {
+			throwBex(BugzillaException.ErrorType.USER_ACTION_NOT_PERMITTED);
+		}
+		if(!isLoggedIn(username)){
+			throwBex(BugzillaException.ErrorType.USER_ALREADY_LOGGED_OFF);
+		}
+		if (getBug(bugID).getState() != Bug.State.RESOLVED) {
+			throw new BugStateException(Bug.State.CONFIRMED, getBug(bugID).getState());
+		}
+		if (getBug(bugID).getState() == Bug.State.VERIFIED) {
+			throw new BugStateException(Bug.State.CONFIRMED, Bug.State.VERIFIED);
+		}
+		if (!devInProgress(username, bugID)) {
+			throwBex(BugzillaException.ErrorType.ANOTHER_DEVELOPER_ALREADY_WORKING);
+		}
+		
 		getBug(bugID).setState(Bug.State.CONFIRMED);
 	}
 
