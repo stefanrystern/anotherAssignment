@@ -126,7 +126,7 @@ public class Bug implements Serializable {
 
 	@Requires({
 		"type != Resolution.UNRESOLVED",
-		"solution.length() > 0",
+		"solution != null",
 	})
 	@Ensures({
 		"solutionType == old(type)",
@@ -136,10 +136,9 @@ public class Bug implements Serializable {
 		if(type == Resolution.UNRESOLVED){
 			throw new BugzillaException(BugzillaException.ErrorType.INVALID_SOLUTION_TYPE);
 		}
-		if(solution.length() <= 0){
+		if(solution == null){
 			throw new BugzillaException(BugzillaException.ErrorType.INVALID_SOLUTION_INFO);
 		}
-		
 		
 		state = State.RESOLVED;
 		solutionType = type;
