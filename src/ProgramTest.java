@@ -296,4 +296,14 @@ public class ProgramTest {
 	}
 	
 	//bugzilla invalidateBug
+	
+	//bugzilla startDevelopment
+	
+	//bugzilla stopDevelopment
+	
+	//bugzilla fixedBug
+	
+	//bugzilla approvedFix
+	
+	//bugzilla rejectFix
 }
