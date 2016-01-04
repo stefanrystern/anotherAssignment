@@ -28,233 +28,174 @@ public class ProgramTest {
 		Bug bug = null;
 		Bugzilla bz = null;
 	}
+
 	@Test(expected = PreconditionError.class)
-	public void testRegisterNullName() {
-		try {
-			// Disable file handling by passing false to the constructor
-			bz = new Bugzilla(false);
-		} catch (BugzillaException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		try {
-			bz.register(null, "abc", Bugzilla.MemberType.USER);
-		} catch (BugzillaException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println(e.getErrorMsg());
-		}
-	}
-	
-	@Test(expected = PreconditionError.class)
-	public void testChangeStateUnconfirmedToInProgress() {
-		try {
-			bug = new Bug(0, "crash on OK press");
-		} catch (BugzillaException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		try {
-
-			bug.setState(Bug.State.INPROGRESS);
-
-		} catch (BugStateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println(e.getErrorMsg());
-
-		} catch (BugzillaException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public void testRegisterNullName() throws BugzillaException {
+		bz = new Bugzilla(false);
+		bz.register(null, "abc", Bugzilla.MemberType.USER);
 	}
 
 	@Test(expected = PreconditionError.class)
-	public void testInvalidID() {
-		try {
-			bug = new Bug(-100, "negative ID");
-		} catch (BugzillaException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println(e.getErrorMsg());
-		}
+	public void testChangeStateUnconfirmedToInProgress() throws BugzillaException {
+		bug = new Bug(0, "crash on OK press");
+		bug.setState(Bug.State.INPROGRESS);
 	}
 
 	@Test(expected = PreconditionError.class)
-	public void testInvalidDescription() {
-		try {
-			bug = new Bug(0, null);
-
-		} catch (BugzillaException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println(e.getErrorMsg());
-		}
+	public void testInvalidID() throws BugzillaException {
+		bug = new Bug(-100, "negative ID");
 	}
 
 	@Test(expected = PreconditionError.class)
-	public void testSetStateFromConfirmedToInProgress() {
-		try {
-			bug = new Bug(0, "set state to unconfirmed");
-			bug.setState(Bug.State.CONFIRMED);
-			bug.setState(Bug.State.INPROGRESS);
-		} catch (BugzillaException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println(e.getErrorMsg());
-		}
-
-		try {
-			bug = new Bug(0, "set state to unconfirmed");
-			bug.setState(Bug.State.INPROGRESS);
-		} catch (BugzillaException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println(e.getErrorMsg());
-		}
+	public void testInvalidDescription() throws BugzillaException {
+		bug = new Bug(0, null);
 	}
 
 	@Test(expected = PreconditionError.class)
-	public void testSetStateUnconfirmed() {
-		try {
-			bug = new Bug(0, "set state to unconfirmed");
-			bug.setState(Bug.State.UNCONFIRMED);
-		} catch (BugzillaException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println(e.getErrorMsg());
-		}
+	public void testSetStateFromConfirmedToInProgress() throws BugzillaException {
+		bug = new Bug(0, "set state to unconfirmed");
+		bug.setState(Bug.State.CONFIRMED);
+		bug.setState(Bug.State.INPROGRESS);
+
+		bug = new Bug(0, "set state to unconfirmed");
+		bug.setState(Bug.State.INPROGRESS);
 	}
 
 	@Test(expected = PreconditionError.class)
-	public void testSetStateResolved() {
-		try {
-			bug = new Bug(0, "set state to resolved");
-			bug.setState(Bug.State.RESOLVED);
-		} catch (BugzillaException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println(e.getErrorMsg());
-		}
+	public void testSetStateUnconfirmed() throws BugzillaException {
+		bug = new Bug(0, "set state to unconfirmed");
+		bug.setState(Bug.State.UNCONFIRMED);
 	}
 
 	@Test(expected = PreconditionError.class)
-	public void testSetResolvedUnresolved() {
-		try {
-			bug = new Bug(0, "setAsResolved to unresolved");
-			bug.setAsResolved(Bug.Resolution.UNRESOLVED, "should fail");
-		} catch (BugzillaException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println(e.getErrorMsg());
-		}
+	public void testSetStateResolved() throws BugzillaException {
+		bug = new Bug(0, "set state to resolved");
+		bug.setState(Bug.State.RESOLVED);
 	}
 
 	@Test(expected = PreconditionError.class)
-	public void testSetAsResolvedInvalidSolution() {
-		try {
-			bug = new Bug(0, "set state to resolved");
-			bug.setAsResolved(Bug.Resolution.INVALID, null);
-		} catch (BugzillaException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println(e.getErrorMsg());
-		}
+	public void testSetResolvedUnresolved() throws BugzillaException {
+		bug = new Bug(0, "setAsResolved to unresolved");
+		bug.setAsResolved(Bug.Resolution.UNRESOLVED, "should fail");
 	}
-	//Bugzilla part
-	
+
 	@Test(expected = PreconditionError.class)
-	public void testRegisterNullUsername(){
-		
+	public void testSetAsResolvedInvalidSolution() throws BugzillaException {
+		bug = new Bug(0, "set state to resolved");
 	}
+	// Bugzilla part
+
 	@Test(expected = PreconditionError.class)
-	public void testAlreadyRegistered(){
-		
+	public void testRegisterNullUsername() {
+
 	}
+
 	@Test(expected = PreconditionError.class)
-	public void testUsernameLength(){
-		
+	public void testAlreadyRegistered() {
+
 	}
+
 	@Test(expected = PreconditionError.class)
-	public void testRegisterNullPassword(){
-		
+	public void testUsernameLength() {
+
 	}
+
 	@Test(expected = PreconditionError.class)
-	public void testRegisterPasswordLength(){
-		
+	public void testRegisterNullPassword() {
+
 	}
+
 	@Test(expected = PreconditionError.class)
-	public void testRegisterMemberType(){
-		
+	public void testRegisterPasswordLength() {
+
 	}
-	//Login
+
 	@Test(expected = PreconditionError.class)
-	public void testLoginNullUsername(){
-		
+	public void testRegisterMemberType() {
+
 	}
+
+	// Login
 	@Test(expected = PreconditionError.class)
-	public void testLoginNullPassword(){
-		
+	public void testLoginNullUsername() {
+
 	}
+
 	@Test(expected = PreconditionError.class)
-	public void testLoginInvalidPassword(){
-		
+	public void testLoginNullPassword() {
+
 	}
+
 	@Test(expected = PreconditionError.class)
-	public void testLoginIsLoggedIn(){
-		
+	public void testLoginInvalidPassword() {
+
 	}
-	//Logout
+
 	@Test(expected = PreconditionError.class)
-	public void testLogoutNullUsername(){
-		
+	public void testLoginIsLoggedIn() {
+
 	}
+
+	// Logout
 	@Test(expected = PreconditionError.class)
-	public void testLogoutIsNotLoggedIn(){
-		
+	public void testLogoutNullUsername() {
+
 	}
-	//submitbug
+
 	@Test(expected = PreconditionError.class)
-	public void testSubmitBugNullUsername(){
-		
+	public void testLogoutIsNotLoggedIn() {
+
 	}
+
+	// submitbug
 	@Test(expected = PreconditionError.class)
-	public void testSubmitBugMemberTypeUser(){
-		
+	public void testSubmitBugNullUsername() {
+
 	}
+
 	@Test(expected = PreconditionError.class)
-	public void testSubmitBugNotLoggedIn(){
-		
+	public void testSubmitBugMemberTypeUser() {
+
 	}
+
 	@Test(expected = PreconditionError.class)
-	public void testSubmitBugDescriptionLength(){
-		
+	public void testSubmitBugNotLoggedIn() {
+
 	}
-	//confirmbug
+
 	@Test(expected = PreconditionError.class)
-	public void testConfirmBugNullUsername(){
-		
+	public void testSubmitBugDescriptionLength() {
+
 	}
+
+	// confirmbug
 	@Test(expected = PreconditionError.class)
-	public void testConfirmBugIDoutOfBounds(){
-		
+	public void testConfirmBugNullUsername() {
+
 	}
+
 	@Test(expected = PreconditionError.class)
-	public void testConfirmBugTypeNotSystemAnalyst(){
-		
+	public void testConfirmBugIDoutOfBounds() {
+
 	}
+
 	@Test(expected = PreconditionError.class)
-	public void testConfirmBugNotLoggedIn(){
-		
+	public void testConfirmBugTypeNotSystemAnalyst() {
+
 	}
+
 	@Test(expected = PreconditionError.class)
-	public void testConfirmBugStateNotUnconfirmed(){
-		
+	public void testConfirmBugNotLoggedIn() {
+
 	}
+
 	@Test(expected = PreconditionError.class)
-	public void testConfirmBugStateVerified(){
-		
+	public void testConfirmBugStateNotUnconfirmed() {
+
+	}
+
+	@Test(expected = PreconditionError.class)
+	public void testConfirmBugStateVerified() {
+
 	}
 }
