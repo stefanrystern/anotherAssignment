@@ -26,11 +26,11 @@ public class Bugzilla implements Serializable {
 		SYSTEMANALYST, QUALITYASSURANCE, DEVELOPER, USER
 	}
 
-	@Requires({ "username != null",
-			// TODO
+	@Requires({ "username != null","username.length()>0","username.length()<20",
+			"passwd != null","passwd.length()>0","passwd.length()<20",
+			"type == MemberType.SYSTEMANALYST || type == MemberType.QUALITYASSURANCE || type == MemberType.DEVELOPER || type == MemberType.USER",
 			"isRegistered(username) == false" })
 	@Ensures({ "isRegistered(old(username)) == true",
-			// TODO
 	})
 	public void register(String username, String passwd, MemberType type) throws BugzillaException {
 
@@ -46,10 +46,10 @@ public class Bugzilla implements Serializable {
 	}
 
 	@Requires({
-			// TODO
+			"passwd == getPasswd(username)",
 	})
 	@Ensures({
-			// TODO
+			"isLoggedIn(old(username)) == true",
 	})
 	public void login(String username, String passwd) throws BugzillaException {
 
@@ -57,10 +57,10 @@ public class Bugzilla implements Serializable {
 	}
 
 	@Requires({
-			// TODO
+			"isLoggedIn(username) == true",
 	})
 	@Ensures({
-			// TODO
+			"isLoggedIn(old(username)) == false",
 	})
 
 	public void logout(String username) throws BugzillaException {
